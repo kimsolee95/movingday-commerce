@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <Header/>
+    <HeaderVue/>
 
     <!-- <nav>
       <router-link to="/">Home</router-link> |
@@ -13,26 +13,27 @@
       testtest
     </div>
 
-    <Footer/>
+    <FooterVue/>
 
   </div>
 </template>
 
 <script>
-import Header from './components/common/Header.vue';
-import Footer from './components/common/Footer.vue';
+import HeaderVue from './components/common/HeaderVue.vue';
+import FooterVue from './components/common/FooterVue.vue';
 
 export default {
 
   name: 'App',
   components: {
-    Header,
-    Footer
+    HeaderVue,
+    FooterVue
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "~@/assets/scss/vendors/bootstrap-vue/index";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
