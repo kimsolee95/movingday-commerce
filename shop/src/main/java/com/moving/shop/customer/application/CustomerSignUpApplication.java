@@ -7,6 +7,7 @@ import com.moving.shop.customer.domain.entity.Customer;
 import com.moving.shop.customer.service.CustomerSignUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class CustomerSignUpApplication {
 
   private final CustomerSignUpService customerSignUpService;
 
+  @Transactional
   public String customerSignUp(SignUpForm form) {
 
     if (customerSignUpService.isMailExist(form.getEmail())) {
