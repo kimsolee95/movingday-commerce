@@ -8,10 +8,7 @@
       <router-link to="/about">About</router-link>
     </nav>
     <router-view/> -->
-
-    <div>
-      testtest
-    </div>
+    <router-view/>
 
     <FooterVue/>
 
