@@ -41,10 +41,10 @@ public class Customer extends BaseEntity {
   @Column(columnDefinition = "int default 0")
   private Integer balanceCash;
 
-  public static Customer from(SignUpForm form) {
+  public static Customer of(SignUpForm form, String encodedPassword) {
     return Customer.builder()
         .email(form.getEmail().toLowerCase(Locale.ROOT))
-        .password(form.getPassword())
+        .password(encodedPassword)
         .name(form.getName())
         .phone(form.getPhone())
         .balanceCash(0)
