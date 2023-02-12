@@ -1,5 +1,6 @@
 package com.moving.shop.common.security;
 
+import com.moving.shop.customer.domain.type.MemberType;
 import com.moving.shop.customer.service.CustomerSignUpService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -21,6 +22,8 @@ public class TokenProvider {
 
   private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60; //1 hour
   private static final String KEY_ROLES = "roles";
+  private static final String ROLE_CUSTOMER = String.valueOf(MemberType.CUSTOMER);
+  private static final String ROLE_COMPANY = String.valueOf(MemberType.COMPANY);
 
   private final CustomerSignUpService customerSignUpService;
 
@@ -45,8 +48,14 @@ public class TokenProvider {
 
   public Authentication getAuthentication(String jwt) {
 
-    UserDetails userDetails = customerSignUpService.loadUserByUsername(this.getUsername(jwt));
-    return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    String keyRoles = getKeyRoles(jwt);
+
+    if (ROLE_CUSTOMER.equals(keyRoles)) {
+      UserDetails userDetails = customerSignUpService.loadUserByUsername(this.getUsername(jwt));
+      return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    return null;
   }
 
   public boolean validateToken(String token) {
@@ -61,6 +70,10 @@ public class TokenProvider {
 
   public String getUsername(String token) {
     return this.parseClaims(token).getSubject();
+  }
+
+  public String getKeyRoles(String token) {
+    return String.valueOf(this.parseClaims(token).get(KEY_ROLES));
   }
 
   private Claims parseClaims(String token) {

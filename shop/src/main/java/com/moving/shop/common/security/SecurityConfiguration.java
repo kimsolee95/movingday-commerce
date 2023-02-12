@@ -42,7 +42,7 @@ public class SecurityConfiguration {
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) ->
-        web.ignoring().antMatchers("/", "/h2-console/**", "/swagger-ui/index.html");
+        web.ignoring().antMatchers("/", "/h2-console/**", "/swagger-ui/index.html"); //해당 주소는 필터 적용 x
   }
 
   @Bean

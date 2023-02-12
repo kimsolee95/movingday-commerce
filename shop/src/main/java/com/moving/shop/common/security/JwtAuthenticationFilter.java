@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
 
-      //토큰 기간 유효성 검증
+      //loadUserByUsername 구현체 부분에서 DB 회원 내용 확인 후 시큐리티 권한 부여
       Authentication auth = this.tokenProvider.getAuthentication(token);
       SecurityContextHolder.getContext().setAuthentication(auth);
 

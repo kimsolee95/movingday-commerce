@@ -6,6 +6,7 @@ import com.moving.shop.customer.domain.dto.SignInForm;
 import com.moving.shop.customer.domain.dto.SignUpForm;
 import com.moving.shop.customer.domain.entity.Customer;
 import com.moving.shop.customer.domain.repository.CustomerRepository;
+import com.moving.shop.customer.domain.type.MemberType;
 import com.moving.shop.customer.service.CustomerSignUpService;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class CustomerSignUpServiceImpl implements CustomerSignUpService {
 
     //고객 권한 부여
     List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
-    grantedAuthorityList.add(new SimpleGrantedAuthority("CUSTOMER"));
+    grantedAuthorityList.add(new SimpleGrantedAuthority(String.valueOf(MemberType.CUSTOMER)));
 
     //(String username, String password, Collection<? extends GrantedAuthority> authorities)
     return new User(customer.getEmail(), customer.getPassword(), grantedAuthorityList);
