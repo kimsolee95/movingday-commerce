@@ -5,13 +5,13 @@
         <div id="loginForm">
           <form @submit.prevent="fnLogin">
             <p>
-              <input class="w3-input" name="uid" placeholder="Enter your ID" v-model="user_id"><br>
+              <input class="w3-input" name="email" placeholder="Enter your EMAIL" v-model="email"><br>
             </p>
             <p>
-              <input name="password" class="w3-input" placeholder="Enter your password" v-model="user_pw" type="password">
+              <input name="password" class="w3-input" placeholder="Enter your password" v-model="password" type="password">
             </p>
             <p>
-              <button type="submit" class="w3-button w3-green w3-round">Login</button>
+              <button type="button" class="w3-button w3-green w3-round" @click="login()">Login</button>
             </p>
           </form>
         </div>
@@ -20,27 +20,52 @@
   </template>
   
   <script>
+import axios from 'axios';
+
   
   export default {
+
     data() {
+
       return {
-        user_id: '',
-        user_pw: ''
+        email: '',
+        password: ''
       }
     },
+
     methods: {
-      fnLogin() {
-        if (this.user_id === '') {
-          alert('ID를 입력하세요.')
-          return
+      
+      login() {
+        
+        if (this.email && this.password) {
+
+          let email = this.email;
+          let password = this.password;
+          let signForm = {
+            "email": email,
+            "password": password
+          };
+
+          axios.post('/api/signin/customer', JSON.stringify(signForm), {
+            headers: {
+              "Content-Type": `application/json`,
+            },
+          })
+          .then((response) => {
+
+            if(response.status === 200) {
+              console.log(JSON.stringify(response.data));
+              this.$store.commit('setToken', response.data);
+            }
+          })
+          .catch(error => {
+            alert(JSON.stringify(error.response));
+          })
+
+        } else {
+          alert('이메일과 비밀번호를 모두 입력하세요');
+          return false;
         }
-  
-        if (this.user_pw === '') {
-          alert('비밀번호를 입력하세요.')
-          return
-        }
-  
-        alert('로그인하였습니다.')
       }
     }
   }
@@ -48,7 +73,7 @@
   
   <style>
   #loginForm {
-    width: 500px;
+    width: 700px;
     margin: auto;
   }
   </style>

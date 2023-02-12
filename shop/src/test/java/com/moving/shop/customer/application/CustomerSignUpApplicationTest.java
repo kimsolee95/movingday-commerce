@@ -38,7 +38,6 @@ class CustomerSignUpApplicationTest {
     assertEquals(result, "회원가입에 성공했습니다.");
   }
 
-
   @Test
   public void CUSTOMER_SIGNUP_FAIL_DUPLICATE_ID() throws Exception {
 
@@ -58,12 +57,10 @@ class CustomerSignUpApplicationTest {
         .phone("01012345667").build();
 
     //when
-//    String failResult = customerSignUpApplication.customerSignUp(form);
 
     //then
     Exception exception = assertThrows(CustomerException.class,
         () -> customerSignUpApplication.customerSignUp(duplicateForm));
-
   }
 
 }

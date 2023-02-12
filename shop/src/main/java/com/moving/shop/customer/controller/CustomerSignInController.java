@@ -2,7 +2,6 @@ package com.moving.shop.customer.controller;
 
 import com.moving.shop.customer.application.CustomerSignInApplication;
 import com.moving.shop.customer.domain.dto.SignInForm;
-import com.moving.shop.customer.domain.dto.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
