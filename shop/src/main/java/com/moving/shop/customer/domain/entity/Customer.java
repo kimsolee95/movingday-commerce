@@ -57,4 +57,8 @@ public class Customer extends BaseEntity {
         .memberType(MemberType.CUSTOMER)
         .build();
   }
+
+  public void changeCash(Customer customer, Integer changeCash) {
+    this.balanceCash = changeCash;
+  }
 }
