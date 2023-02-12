@@ -50,6 +50,7 @@ public class TokenProvider {
 
     String keyRoles = getKeyRoles(jwt);
 
+    //CUSTOMER 권한 부여
     if (ROLE_CUSTOMER.equals(keyRoles)) {
       UserDetails userDetails = customerSignUpService.loadUserByUsername(this.getUsername(jwt));
       return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
