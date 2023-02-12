@@ -41,4 +41,14 @@ public class CashBalanceHistory extends BaseEntity {
 
   //상세메시지
   private String description;
+
+  public static CashBalanceHistory initCashBalanceHistory(Customer customer) {
+    return CashBalanceHistory.builder()
+        .changeCash(0)
+        .currentCash(0)
+        .customer(customer)
+        .description("INIT HISTORY")
+        .fromWhom(customer.getEmail())
+        .build();
+  }
 }

@@ -1,5 +1,7 @@
 package com.moving.shop.customer.service.impl;
 
+import static com.moving.shop.customer.domain.entity.CashBalanceHistory.initCashBalanceHistory;
+
 import com.moving.shop.common.exception.customexception.CustomerException;
 import com.moving.shop.common.exception.type.CustomerErrorCode;
 import com.moving.shop.common.security.TokenProvider;
@@ -30,13 +32,7 @@ public class CustomerCashServiceImpl implements CustomerCashService {
         .orElseThrow(() -> new CustomerException(CustomerErrorCode.NOT_EXIST_MEMBER));
 
     CashBalanceHistory cashBalanceHistory = cashBalanceHistoryRepository.findFirstByCustomer_IdOrderByIdDesc(customer.getId())
-        .orElseGet(() -> CashBalanceHistory.builder()
-            .changeCash(0)
-            .currentCash(0)
-            .customer(customer)
-            .description("INIT HISTORY")
-            .fromWhom(email)
-            .build());
+        .orElseGet(() -> CashBalanceHistory.initCashBalanceHistory(customer));
 
     if (cashBalanceHistory.getCurrentCash() + form.getCash() < 0) {
       throw new CustomerException(CustomerErrorCode.SHORT_OF_BALANCE);
@@ -50,7 +46,7 @@ public class CustomerCashServiceImpl implements CustomerCashService {
         .customer(customer)
         .build();
 
-    customer.changeCash(customer, cashBalanceHistory.getCurrentCash());
+    customer.changeCash(cashBalanceHistory.getCurrentCash());
     return cashBalanceHistoryRepository.save(cashBalanceHistory);
   }
 }

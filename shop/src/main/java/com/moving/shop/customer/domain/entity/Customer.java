@@ -58,7 +58,7 @@ public class Customer extends BaseEntity {
         .build();
   }
 
-  public void changeCash(Customer customer, Integer changeCash) {
+  public void changeCash(Integer changeCash) {
     this.balanceCash = changeCash;
   }
 }
