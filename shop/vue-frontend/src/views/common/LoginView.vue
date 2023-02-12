@@ -41,9 +41,6 @@ import axios from 'axios';
 
           let email = this.email;
           let password = this.password;
-          // this.store.dispatch('login', {email, password});
-
-
           let signForm = {
             "email": email,
             "password": password
@@ -55,13 +52,14 @@ import axios from 'axios';
             },
           })
           .then((response) => {
+
             if(response.status === 200) {
-              console.log(JSON.stringify(response));
               console.log(JSON.stringify(response.data));
+              this.$store.commit('setToken', response.data);
             }
           })
           .catch(error => {
-            alert(JSON.stringify(error.response.data.message));
+            alert(JSON.stringify(error.response));
           })
 
         } else {
@@ -75,7 +73,7 @@ import axios from 'axios';
   
   <style>
   #loginForm {
-    width: 500px;
+    width: 700px;
     margin: auto;
   }
   </style>
