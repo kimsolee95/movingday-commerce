@@ -12,6 +12,4 @@ public interface CustomerSignUpService extends UserDetailsService {
   boolean isMailExist(String email);
 
   Customer findByEmail(SignInForm form);
-
-
 }
