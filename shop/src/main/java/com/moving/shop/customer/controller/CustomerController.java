@@ -6,6 +6,7 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREF
 import com.moving.shop.customer.domain.dto.ChangeCashForm;
 import com.moving.shop.customer.domain.entity.CashBalanceHistory;
 import com.moving.shop.customer.service.CustomerCashService;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +26,7 @@ public class CustomerController {
 
   @PostMapping("/cash")
   @PreAuthorize("hasAuthority('CUSTOMER')")
-  public ResponseEntity<CashBalanceHistory> changeCash(@RequestHeader(value = TOKEN_HEADER) String token, @RequestBody ChangeCashForm form) {
+  public ResponseEntity<CashBalanceHistory> changeCash(@RequestHeader(value = TOKEN_HEADER) String token, @Valid @RequestBody ChangeCashForm form) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(cashService.changeCashBalance(refinedToken, form));

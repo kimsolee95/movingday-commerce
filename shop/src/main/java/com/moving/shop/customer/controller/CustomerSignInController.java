@@ -2,6 +2,7 @@ package com.moving.shop.customer.controller;
 
 import com.moving.shop.customer.application.CustomerSignInApplication;
 import com.moving.shop.customer.domain.dto.SignInForm;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class CustomerSignInController {
   private final CustomerSignInApplication customerSignInApplication;
 
   @PostMapping("/customer")
-  public ResponseEntity<String> customerSignUp(@RequestBody SignInForm form) {
+  public ResponseEntity<String> customerSignUp(@Valid @RequestBody SignInForm form) {
     return ResponseEntity.ok(customerSignInApplication.generateToken(form));
   }
 
