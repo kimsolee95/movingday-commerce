@@ -25,7 +25,7 @@ public class CustomerCashServiceImpl implements CustomerCashService {
 
   @Transactional
   @Override
-  public CashBalanceHistory changeCashBalance(String refinedToken, ChangeCashForm form) {
+  public ChangeCashForm changeCashBalance(String refinedToken, ChangeCashForm form) {
 
     String email = tokenProvider.getUsername(refinedToken);
     Customer customer = customerRepository.findByEmail(email)
@@ -47,6 +47,7 @@ public class CustomerCashServiceImpl implements CustomerCashService {
         .build();
 
     customer.changeCash(cashBalanceHistory.getCurrentCash());
-    return cashBalanceHistoryRepository.save(cashBalanceHistory);
+    cashBalanceHistoryRepository.save(cashBalanceHistory);
+    return form;
   }
 }

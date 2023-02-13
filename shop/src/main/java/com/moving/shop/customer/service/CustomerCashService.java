@@ -5,6 +5,6 @@ import com.moving.shop.customer.domain.entity.CashBalanceHistory;
 
 public interface CustomerCashService {
 
-  CashBalanceHistory changeCashBalance(String refinedToken, ChangeCashForm form);
+  ChangeCashForm changeCashBalance(String refinedToken, ChangeCashForm form);
 
 }

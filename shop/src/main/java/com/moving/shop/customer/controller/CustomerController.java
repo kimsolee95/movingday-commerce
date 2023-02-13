@@ -4,8 +4,10 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_HEAD
 import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREFIX;
 
 import com.moving.shop.customer.domain.dto.ChangeCashForm;
+import com.moving.shop.customer.domain.dto.CustomerRequestForm;
 import com.moving.shop.customer.domain.entity.CashBalanceHistory;
 import com.moving.shop.customer.service.CustomerCashService;
+import com.moving.shop.customer.service.CustomerRequestService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerController {
 
   private final CustomerCashService cashService;
-
+  private final CustomerRequestService customerRequestService;
 
   @PostMapping("/cash")
   @PreAuthorize("hasAuthority('CUSTOMER')")
-  public ResponseEntity<CashBalanceHistory> changeCash(@RequestHeader(value = TOKEN_HEADER) String token, @Valid @RequestBody ChangeCashForm form) {
+  public ResponseEntity<ChangeCashForm> changeCash(@RequestHeader(value = TOKEN_HEADER) String token, @Valid @RequestBody ChangeCashForm form) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(cashService.changeCashBalance(refinedToken, form));
+  }
+
+  @PostMapping("/requests")
+  @PreAuthorize("hasAuthority('CUSTOMER')")
+  public ResponseEntity<CustomerRequestForm> addCustomerRequest(@RequestHeader(value = TOKEN_HEADER) String token,
+      @Valid @RequestBody CustomerRequestForm form) {
+
+    String refinedToken = token.substring(TOKEN_PREFIX.length());
+    return ResponseEntity.ok(customerRequestService.addCustomerRequest(refinedToken, form));
   }
 
 }
