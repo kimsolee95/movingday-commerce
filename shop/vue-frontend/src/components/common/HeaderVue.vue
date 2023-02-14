@@ -25,7 +25,7 @@
             <em>User</em>
           </template>
           <b-dropdown-item href="#">Profile</b-dropdown-item>
-          <b-dropdown-item href="#">로그아웃하기</b-dropdown-item>
+          <b-dropdown-item href="#" @click="logout()">로그아웃하기</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
@@ -36,5 +36,13 @@
 <script>
 export default {
 	
+  methods: {
+
+    logout() {
+      this.$store.dispatch('logout');
+    }
+
+  }
+
 }
 </script>

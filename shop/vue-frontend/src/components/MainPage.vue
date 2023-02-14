@@ -18,12 +18,31 @@
             @ok="handleOk"
           >
             <form ref="form" @submit.stop.prevent="handleSubmit">
-              <b-form-group label="Name" label-for="name-input" invalid-feedback="Name is required" :state="nameState">
-                <b-form-input id="name-input" v-model="name" :state="nameState" required></b-form-input>
+
+              <b-form-group label="서비스 카테고리" label-for="serviceCategory-input" invalid-feedback="서비스 카테고리를 선택해주세요." >
+                <b-form-select id="serviceCategory-intput" v-model="serviceCategorySelected" :options="serviceCategoryOptions" requierd></b-form-select>
               </b-form-group>
 
-              <b-form-group label="serviceAddress" label-for="serviceAddress-input" invalid-feedback="서비스주소지를 입력하세요" :state="serviceAddressState">
+              <b-form-group label="서비스 받아볼 주소지" label-for="serviceAddress-input" invalid-feedback="서비스주소지를 입력하세요" :state="serviceAddressState">
                 <b-form-input id="serviceAddress-input" v-model="serviceAddress" :state="serviceAddressState" required></b-form-input>
+              </b-form-group>
+
+              <div>
+                <label for="example-datepicker">Choose a date</label>
+                <b-form-datepicker id="example-datepicker" v-model="value" class="mb-2"></b-form-datepicker>
+                <p>Value: '{{ value }}'</p>
+              </div>
+
+              <b-form-group label="장소 면적 (평)" label-for="placeArea-input" invalid-feedback="장소의 면적(평)를 입력하세요" :state="placeAreaState">
+                <b-form-input id="placeArea-input" v-model="placeArea" :type="'number'" :state="placeAreaState" required></b-form-input>
+              </b-form-group>
+
+              <b-form-group label="장소 구조" label-for="placeShape-input" invalid-feedback="장소의 구조를 선택해주세요." >
+                <b-form-select id="placeShape-intput" v-model="placeShapeSelected" :options="placeShapeOptions" requierd></b-form-select>
+              </b-form-group>
+
+              <b-form-group label="요구사항" label-for="detailRequest-input" invalid-feedback="서비스 시 전문가가 알고 있어야 할 내용을 입력해주세요." :state="detailRequestState">
+                <b-form-input id="detailRequest-input" v-model="detailRequest" :state="detailRequestState" required></b-form-input>
               </b-form-group>
 
             </form>
@@ -36,15 +55,44 @@
 </template>
 
 <script>
+// import axios from 'axios';
+// import $axios from './utils/customaxios.js'
+
+
 export default {
   name: 'MainPage',
   data() {
     return {
-      name: '',
-      nameState: null,
+
       submittedNames: [],
 
-      serviceAddress: ''
+      customerRequestForm: {}, //request body
+
+      serviceAddress: '',
+      serviceAddressState: null,
+      
+      value: '',
+
+      detailRequest: '',
+      detailRequestState: null,
+
+      placeArea: '',
+      placeAreaState: null,
+
+      serviceCategorySelected: null,
+      serviceCategoryOptions: [
+          { value: null, text: '서비스 카테고리를 선택하세요' },
+          { value: 'CLEANING', text: '청소' },
+          { value: 'CONSTRUCTION', text: '인테리어 시공' },
+        ],
+
+      placeShapeSelected: null,
+      placeShapeOptions: [
+        { value: null, text: '장소 구조를 선택하세요'},
+        { value: 'APARTMENT', text: '아파트'},
+        { value: 'SINGLE_HOUSE', text: '단독 주택'},
+        { value: 'HOUSE', text: '빌라'}
+      ]
     }
   },
   methods: {
@@ -52,10 +100,43 @@ export default {
 
         const valid = this.$refs.form.checkValidity();
         
+        if (this.value === null || this.value == '') {
+          alert('서비스 희망날짜를 입력하세요.');
+          return false;
+        }
+
+        if (this.serviceCategorySelected === null || this.serviceCategorySelected == '') {
+          alert('서비스 카테고리를 입력하세요.');
+          return false;
+        }
+
+        if (this.placeShapeSelected === null || this.placeShapeSelected == '') {
+          alert('서비스 장소 구조를 입력하세요.');
+          return false;
+        }
+
         this.nameState = valid;
         this.serviceAddressState = valid;
+
+        this.detailRequestState = valid;
+        
+        this.placeAreaState = valid;
+
         return valid;
       },
+
+      setRequestBody() {
+        
+        this.customerRequestForm = {
+          "desiredDate": this.value,
+          "detailRequest": this.detailRequest,
+          "placeArea": this.placeArea,
+          "placeShape": this.placeShapeSelected,
+          "serviceAddress": this.serviceAddress,
+          "serviceCategory": this.serviceCategorySelected
+        }
+      },
+
       resetModal() {
 
         this.name = '';
@@ -63,7 +144,19 @@ export default {
         
         this.serviceAddress = '';
         this.serviceAddressState = null;
+        this.value = '';
+
+        this.detailRequest = '';
+        this.detailRequestState = null;
+        
+        this.placeArea = '';
+        this.placeAreaState = null;
+
+        this.serviceCategorySelected = null;
+
+        this.placeShapeSelected = null;
       },
+
       handleOk(bvModalEvent) {
         // Prevent modal from closing
         bvModalEvent.preventDefault()
@@ -75,12 +168,35 @@ export default {
         if (!this.checkFormValidity()) {
           return
         }
+        
+        this.setRequestBody();
+
         // Push the name to submitted names
-        this.submittedNames.push(this.name)
+        // this.submittedNames.push(this.name)
         // Hide the modal manually
         this.$nextTick(() => {
-          this.$bvModal.hide('modal-prevent-closing')
+
+          //고객 요청서 등록 API 호출
+          //http://localhost:8081
+          this.$axios.post('/api/customer/requests', this.customerRequestForm, {
+            headers: {
+              "Content-Type": `application/json`
+            },
+          }).then((response) => {
+
+              if (response.status === 200) {
+                console.log(JSON.stringify(response.data));
+                alert('요청서를 접수하였습니다.');
+              }
+            })
+            .catch(error => {
+              alert(JSON.stringify(error));
+            })
+
+          //모달 hide
+          this.$bvModal.hide('modal-prevent-closing');
         })
+
       }
   }
 

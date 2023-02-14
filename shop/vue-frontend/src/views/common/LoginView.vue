@@ -1,79 +1,92 @@
 <template>
-    <div>
-      <div>
-        <h2>Log In</h2>
-        <div id="loginForm">
-          <form @submit.prevent="fnLogin">
-            <p>
-              <input class="w3-input" name="email" placeholder="Enter your EMAIL" v-model="email"><br>
-            </p>
-            <p>
-              <input name="password" class="w3-input" placeholder="Enter your password" v-model="password" type="password">
-            </p>
-            <p>
-              <button type="button" class="w3-button w3-green w3-round" @click="login()">Login</button>
-            </p>
-          </form>
-        </div>
+  <div>
+    <div id="login-page">
+      <h2>Log In</h2>
+      <div id="loginForm">
+        <form @submit.prevent="fnLogin">
+
+          <b-form-group id="fieldset-1" label="Enter your email" label-for="input-1"
+            valid-feedback="Thank you!">
+            <b-form-input id="input-1" v-model="email" trim></b-form-input>
+          </b-form-group>
+
+          <b-form-group id="fieldset-1" label="Enter your password" label-for="input-1"
+            valid-feedback="Thank you!">
+            <b-form-input id="input-1" v-model="password" trim></b-form-input>
+          </b-form-group>
+
+          <div>
+            <b-button block variant="success" @click="login()">Login</b-button>
+          </div>
+
+        </form>
       </div>
     </div>
-  </template>
-  
-  <script>
+  </div>
+</template>
+
+<script>
 import axios from 'axios';
 
-  
-  export default {
+export default {
 
-    data() {
+  data() {
 
-      return {
-        email: '',
-        password: ''
-      }
-    },
+    return {
+      email: '',
+      password: ''
+    }
+  },
 
-    methods: {
+  methods: {
+    
+    login() {
       
-      login() {
-        
-        if (this.email && this.password) {
+      if (this.email && this.password) {
 
-          let email = this.email;
-          let password = this.password;
-          let signForm = {
-            "email": email,
-            "password": password
-          };
+        let email = this.email;
+        let password = this.password;
+        let signForm = {
+          "email": email,
+          "password": password
+        };
 
-          axios.post('/api/signin/customer', JSON.stringify(signForm), {
-            headers: {
-              "Content-Type": `application/json`,
-            },
-          })
-          .then((response) => {
+        // 확인 필요내용. 
+        //api 부분 proxy에서 http://localhost:8081 포트로 바꿔서 보내주긴 하나 8080도 같이 호출이 된다?.. 
+        this.$axios.post('/api/signin/customer', JSON.stringify(signForm), {
+          headers: {
+            "Content-Type": `application/json`,
+          },
+        })
+        .then((response) => {
 
-            if(response.status === 200) {
-              console.log(JSON.stringify(response.data));
-              this.$store.commit('setToken', response.data);
-            }
-          })
-          .catch(error => {
-            alert(JSON.stringify(error.response));
-          })
+          if(response.status === 200) {
+            console.log(JSON.stringify(response.data));
+            this.$store.commit('setToken', response.data);
+            this.$router.push("/"); //로그인 성공하면 main page 이동
+          }
+        })
+        .catch(error => {
+          alert(JSON.stringify(error));
+        })
 
-        } else {
-          alert('이메일과 비밀번호를 모두 입력하세요');
-          return false;
-        }
+      } else {
+        alert('이메일과 비밀번호를 모두 입력하세요');
+        return false;
       }
     }
   }
-  </script>
-  
-  <style>
-  #loginForm {
-    width: 700px;
-    margin: auto;
-  }
-  </style>
+}
+</script>
+
+<style>
+#loginForm {
+  width: 700px;
+  margin: auto;
+  padding-top: 50px;
+}
+
+#login-page {
+  padding-top: 70px;
+}
+</style>
