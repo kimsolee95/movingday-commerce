@@ -41,7 +41,7 @@ public class CustomerRequestForm {
   /* 서비스카테고리 ENUM TYPE 반환 */
   public ServiceCategory getServiceCategoryType() {
 
-    if (this.placeShape.trim().isEmpty()) {
+    if (this.serviceCategory.trim().isEmpty()) {
       return null;
     }
       return ServiceCategory.valueOf(this.serviceCategory.toUpperCase(Locale.ROOT));
