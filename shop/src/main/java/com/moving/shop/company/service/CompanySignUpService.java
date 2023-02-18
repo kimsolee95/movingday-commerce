@@ -9,4 +9,6 @@ public interface CompanySignUpService extends UserDetailsService {
   /* 회원가입 (업체) */
   Company signUp(CompanySignUpForm form);
 
+  /* 회원 존재 여부 확인 (업체) */
+  boolean existsByEmail(String email);
 }

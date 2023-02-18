@@ -1,5 +1,7 @@
 package com.moving.shop.company.application;
 
+import com.moving.shop.common.exception.customexception.CompanyException;
+import com.moving.shop.common.exception.type.CompanyErrorCode;
 import com.moving.shop.company.domain.dto.CompanySignUpForm;
 import com.moving.shop.company.domain.entity.Company;
 import com.moving.shop.company.service.CompanyImgService;
@@ -17,7 +19,12 @@ public class CompanySignUpApplication {
   private final CompanyImgService companyImgService;
 
   @Transactional
-  public String companySignUp(CompanySignUpForm companySignUpForm, MultipartFile uploadFile) {
+  public String
+  companySignUp(CompanySignUpForm companySignUpForm, MultipartFile uploadFile) {
+
+    if (companySignUpService.existsByEmail(companySignUpForm.getEmail())) {
+      throw new CompanyException(CompanyErrorCode.EMAIL_ALREADY_EXIST);
+    }
 
     Company saveCompany = companySignUpService.signUp(companySignUpForm);
 

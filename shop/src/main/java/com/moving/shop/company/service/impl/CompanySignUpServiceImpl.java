@@ -32,6 +32,11 @@ public class CompanySignUpServiceImpl implements CompanySignUpService {
   }
 
   @Override
+  public boolean existsByEmail(String email) {
+    return companyRepository.existsByEmail(email);
+  }
+
+  @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
     Company company = companyRepository.findByEmail(username)

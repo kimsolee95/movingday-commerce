@@ -44,7 +44,7 @@ public class SecurityConfiguration {
     return (web) ->
         web.ignoring()
             .mvcMatchers("/images/**")
-            .antMatchers("/", "/*/", "/h2-console/**", "/swagger-ui/index.html"); //해당 주소는 필터 적용 x
+            .antMatchers("/", "/h2-console/**", "/swagger-ui/index.html"); //해당 주소는 필터 적용 x
   }
 
   @Bean
