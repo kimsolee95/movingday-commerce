@@ -1,5 +1,7 @@
 package com.moving.shop.common.security;
 
+import com.moving.shop.company.application.CompanySignUpApplication;
+import com.moving.shop.company.service.CompanySignUpService;
 import com.moving.shop.customer.domain.type.MemberType;
 import com.moving.shop.customer.service.CustomerSignUpService;
 import io.jsonwebtoken.Claims;
@@ -26,6 +28,7 @@ public class TokenProvider {
   private static final String ROLE_COMPANY = String.valueOf(MemberType.COMPANY);
 
   private final CustomerSignUpService customerSignUpService;
+  private final CompanySignUpService companySignUpService;
 
   @Value("${spring.jwt.secret}")
   private String secretKey;
@@ -53,6 +56,12 @@ public class TokenProvider {
     //CUSTOMER 권한 부여
     if (ROLE_CUSTOMER.equals(keyRoles)) {
       UserDetails userDetails = customerSignUpService.loadUserByUsername(this.getUsername(jwt));
+      return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    //COMPANY 권환 부여
+    if (ROLE_COMPANY.equals(keyRoles)) {
+      UserDetails userDetails = companySignUpService.loadUserByUsername(this.getUsername(jwt));
       return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
