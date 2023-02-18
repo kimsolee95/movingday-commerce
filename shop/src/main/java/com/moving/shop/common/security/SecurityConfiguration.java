@@ -32,7 +32,7 @@ public class SecurityConfiguration {
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers("/**/signin", "/**/signup").permitAll()
+        .antMatchers("/**/signin", "/**/signup").permitAll() // "/images/**",
         .and()
         .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -42,7 +42,9 @@ public class SecurityConfiguration {
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) ->
-        web.ignoring().antMatchers("/", "/h2-console/**", "/swagger-ui/index.html"); //해당 주소는 필터 적용 x
+        web.ignoring()
+            .mvcMatchers("/images/**")
+            .antMatchers("/", "/*/", "/h2-console/**", "/swagger-ui/index.html"); //해당 주소는 필터 적용 x
   }
 
   @Bean
