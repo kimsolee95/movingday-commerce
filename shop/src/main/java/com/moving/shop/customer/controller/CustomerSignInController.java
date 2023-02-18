@@ -18,7 +18,7 @@ public class CustomerSignInController {
   private final CustomerSignInApplication customerSignInApplication;
 
   @PostMapping("/customer")
-  public ResponseEntity<String> customerSignUp(@Valid @RequestBody SignInForm form) {
+  public ResponseEntity<String> customerSignIn(@Valid @RequestBody SignInForm form) {
     return ResponseEntity.ok(customerSignInApplication.generateToken(form));
   }
 

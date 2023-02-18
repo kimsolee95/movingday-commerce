@@ -1,5 +1,7 @@
 package com.moving.shop.company.service.impl;
 
+import com.moving.shop.common.exception.customexception.CompanyException;
+import com.moving.shop.common.exception.type.CompanyErrorCode;
 import com.moving.shop.company.domain.dto.CompanySignUpForm;
 import com.moving.shop.company.domain.entity.Company;
 import com.moving.shop.company.domain.repository.CompanyRepository;
@@ -34,6 +36,12 @@ public class CompanySignUpServiceImpl implements CompanySignUpService {
   @Override
   public boolean existsByEmail(String email) {
     return companyRepository.existsByEmail(email);
+  }
+
+  @Override
+  public Company findByEmail(String email) {
+    return companyRepository.findByEmail(email)
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.NOT_MATCH_LOGIN_INFO));
   }
 
   @Override
