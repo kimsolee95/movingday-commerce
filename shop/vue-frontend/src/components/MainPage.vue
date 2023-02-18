@@ -1,4 +1,5 @@
 <template>
+  <div>
   <b-container fluid class="text-light text-center" style="padding-top: 57px">
     <b-row class="d-flex justify-content-center">
     <b-col cols="10">
@@ -52,6 +53,44 @@
     </b-col>
     </b-row>
   </b-container>
+
+  <b-alert show variant="light">후기가 증명합니다.</b-alert>
+  
+  <div id="company-list">
+    <b-card-group deck>
+      <b-card title="Title" img-src="/images/company/2023/02/16/4019c79a-9782-4928-841b-21936fd1984e.png" img-alt="Image" img-top>
+        <b-card-text>
+          This is a wider card with supporting text below as a natural lead-in to additional content.
+          This content is a little bit longer.
+        </b-card-text>
+        <template #footer>
+          <small class="text-muted">Last updated 3 mins ago</small>
+        </template>
+      </b-card>
+    
+      <b-card title="Title" img-src="https://picsum.photos/300/300/?image=41" img-alt="Image" img-top>
+        <b-card-text>
+          This card has supporting text below as a natural lead-in to additional content.
+        </b-card-text>
+        <template #footer>
+          <small class="text-muted">Last updated 3 mins ago</small>
+        </template>
+      </b-card>
+    
+      <b-card title="Title" img-src="https://picsum.photos/300/300/?image=41" img-alt="Image" img-top>
+        <b-card-text>
+          This is a wider card with supporting text below as a natural lead-in to additional content.
+          This card has even longer content than the first to show that equal height action.
+        </b-card-text>
+        <template #footer>
+          <small class="text-muted">Last updated 3 mins ago</small>
+        </template>
+      </b-card>
+    </b-card-group>
+  </div>
+
+  </div>
+
 </template>
 
 <script>
@@ -211,4 +250,10 @@ export default {
   p {
     color:rgb(42, 59, 47);
   }
+  #company-list {
+    width: 1000px;
+    margin: auto;
+    padding-top: 50px;
+  }
+
 </style>

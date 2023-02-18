@@ -1,5 +1,6 @@
 package com.moving.shop.common.exception;
 
+import com.moving.shop.common.exception.customexception.CompanyException;
 import com.moving.shop.common.exception.customexception.CustomerException;
 import com.moving.shop.common.exception.model.ErrorResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,21 @@ public class GlobalExceptionHandler {
         .body(ErrorResponse.builder()
             .code(e.getCustomerErrorCode().name())
             .message(e.getCustomerErrorCode().getDescription())
+            .status(e.getStatus())
+            .build());
+  }
+
+  /**
+   * company exception 핸들러
+   * */
+  @ExceptionHandler({CompanyException.class})
+  public ResponseEntity<ErrorResponse> companyExceptionHandler(HttpServletRequest request,
+      CompanyException e) {
+
+    return ResponseEntity.status(e.getStatus())
+        .body(ErrorResponse.builder()
+            .code(e.getCompanyErrorCode().name())
+            .message(e.getCompanyErrorCode().getDescription())
             .status(e.getStatus())
             .build());
   }
