@@ -28,7 +28,8 @@ public class CustomerController {
 
   @PostMapping("/cash")
   @PreAuthorize("hasAuthority('CUSTOMER')")
-  public ResponseEntity<ChangeCashForm> changeCash(@RequestHeader(value = TOKEN_HEADER) String token, @Valid @RequestBody ChangeCashForm form) {
+  public ResponseEntity<ChangeCashForm> changeCash(
+      @RequestHeader(value = TOKEN_HEADER) String token, @Valid @RequestBody ChangeCashForm form) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(cashService.changeCashBalance(refinedToken, form));
