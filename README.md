@@ -11,7 +11,7 @@
 
 제가 담당했던 기능인 청소 / 인테리어 시공 서비스 구매 사이트를 재구현한 개인 프로젝트입니다.
 
-기존의 ERD 및 기획서를 바탕으로 사용 기술스택에 맞춰 ERD 수정 / Spring Boot로 Backend API를 개발 및 테스트 코드를 작성, 
+기존의 ERD 및 기획서를 바탕으로 사용 기술스택에 맞춰 ERD 수정 / Spring Boot로 Backend API를 개발 및 테스트 코드를 작성해보고, 
 
 Backend와 frontend가 분리된 환경을 만들어보기 위해 Vue.js 2를 사용하여 frontend를 구현했습니다.
 
