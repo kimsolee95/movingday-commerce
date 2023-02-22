@@ -26,7 +26,7 @@ class CustomerSignUpApplicationTest {
 
     //given
     SignUpForm form = SignUpForm.builder()
-        .email("test@naver.com")
+        .email("test000@naver.com")
         .name("testuser")
         .password("1122")
         .phone("01012345667").build();
@@ -43,7 +43,7 @@ class CustomerSignUpApplicationTest {
 
     //given
     SignUpForm form = SignUpForm.builder()
-        .email("test@naver.com")
+        .email("test000@naver.com")
         .name("testuser")
         .password("1122")
         .phone("01012345667").build();
@@ -51,7 +51,7 @@ class CustomerSignUpApplicationTest {
 
     //duplicate form
     SignUpForm duplicateForm = SignUpForm.builder()
-        .email("test@naver.com")
+        .email("test000@naver.com")
         .name("testuser")
         .password("1122")
         .phone("01012345667").build();
