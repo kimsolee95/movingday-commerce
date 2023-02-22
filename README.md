@@ -9,6 +9,8 @@
 
 제가 담당했던 기능인 청소 / 인테리어 시공 서비스 구매 사이트를 재구현한 개인 프로젝트입니다.
 
+Spring Boot로 Backend API를 개발 및 테스트 코드를 같이 하였고, Backend와 frontend가 분리된 환경을 만들어보기 위해 Vue.js 2를 사용하여 frontend를 구현했습니다.
+
 
 :watch: 개발기간
 ---
@@ -19,6 +21,8 @@
 ---
 - OS: `Window 10 Home`
 - Language: `JAVA 11`, `JavaScript`, `SQL`
+- ORM: `JPA`
 - Framework: `Spring Boot`, `Vue.js 2`
 - IDE: `IntelliJ IDEA community`
-- Database: MariaDB
+- Database: `MariaDB`, `Redis`
+- ETC: `Docker`
