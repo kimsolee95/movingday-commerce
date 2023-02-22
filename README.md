@@ -18,7 +18,7 @@ Backend와 frontend가 분리된 환경을 만들어보기 위해 Vue.js 2를 �
 
 :watch: 개발기간
 ---
-2023.02.10 ~
+2023.02.09 ~
 
 
 :mag_right: 개발환경
