@@ -5,7 +5,9 @@
 
 :computer: 프로젝트 소개
 ---
-이전에 참여했던 팀프로젝트 쌍용방(부동산 중개 및 청소시공서비스 연계 플랫폼: https://github.com/kimsolee95/SsangYongBangProject) 중, 
+이전에 참여했던 팀프로젝트 쌍용방
+
+(부동산 중개 및 청소시공서비스 연계 플랫폼: https://github.com/kimsolee95/SsangYongBangProject) 중, 
 
 제가 담당했던 기능인 청소 / 인테리어 시공 서비스 구매 사이트를 재구현한 개인 프로젝트입니다.
 
