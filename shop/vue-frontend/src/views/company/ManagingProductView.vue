@@ -76,7 +76,7 @@
             label-cols-sm="3"
             label-align-sm="left"
           >
-            <b-form-input id="optionName" v-model="productOption.name"></b-form-input>
+            <b-form-input class="optionName" :type="'text'" v-model="productOption.name"></b-form-input>
           </b-form-group>
           <b-form-group
               label="상품옵션 가격: "
@@ -84,7 +84,7 @@
               label-cols-sm="3"
               label-align-sm="left"
             >
-            <b-form-input id="optionPrice" :type="'number'" v-model="productOption.optionPrice"></b-form-input>
+            <b-form-input class="optionPrice" :type="'number'" v-model="productOption.optionPrice"></b-form-input>
           </b-form-group>
         </b-card-text>
 
@@ -122,7 +122,7 @@
           }
         ],
 
-        serviceRequestId: 1
+        serviceRequestId: 1 //todo: 추후 prop으로 받아와서 값 바꿔주어야 함.
 
       }
     },
@@ -166,13 +166,20 @@
           },
         }).then((response) => {
 
+            if (response.status === 400) {
+              alert(response);
+            }
+
             if (response.status === 200) {
               console.log(JSON.stringify(response.data));
               alert('선택한 고객님의 서비스요청서에 서비스상품등록을 완료하였습니다.');
             }
           })
           .catch(error => {
-            alert(JSON.stringify(error));
+
+            if (error.response.status === 400) {
+              alert(error.response.data.message);
+            }
           })        
       }
 

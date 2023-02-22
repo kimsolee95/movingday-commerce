@@ -6,6 +6,7 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREF
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
 import com.moving.shop.product.domain.dto.ServiceProductResponse;
 import com.moving.shop.product.service.CompanyProductService;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +26,7 @@ public class CompanyProductController {
   @PostMapping
   @PreAuthorize("hasAuthority('COMPANY')")
   public ResponseEntity<ServiceProductResponse> addServiceProduct(@RequestHeader(value = TOKEN_HEADER) String token,
-      @RequestBody AddServiceProductForm form) {
+      @Valid @RequestBody AddServiceProductForm form) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(
