@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from "../views/common/LoginView.vue"
 import SignUpCompanyView from "../views/common/SignUpCompanyView.vue"
+import CompanyLoginView from "../views/common/CompanyLoginView.vue"
+import ManagingProductView from "../views/company/ManagingProductView.vue"
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -32,6 +34,16 @@ const routes = [
     path: '/sign-up/company',
     name: 'signup',
     component: SignUpCompanyView
+  },
+  {
+    path: '/login/company',
+    name: 'loginCompany',
+    component: CompanyLoginView
+  },
+  {
+    path: '/company/service-products',
+    name: 'managingServiceProducts',
+    component: ManagingProductView
   }
 ]
 
