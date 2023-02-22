@@ -2,9 +2,15 @@ package com.moving.shop.company.domain.dto;
 
 import com.moving.shop.customer.domain.type.ServiceCategory;
 import java.util.Locale;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CompanySignUpForm {
 
   /* 서비스 카테고리 */
