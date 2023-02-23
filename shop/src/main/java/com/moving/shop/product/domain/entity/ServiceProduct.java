@@ -2,6 +2,7 @@ package com.moving.shop.product.domain.entity;
 
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.company.domain.entity.Company;
+import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,13 +58,16 @@ public class ServiceProduct extends BaseEntity {
   /* 서비스 실행일시 */
   private LocalDateTime executeDate;
 
-  /* 고객 서비스 요청서 ID */
-  private Long serviceRequestId;
+  /* 고객 서비스 요청서 */
+//  private Long serviceRequestId;
+  @ManyToOne
+  @JoinColumn(name = "customerRequestId")
+  private CustomerRequest customerRequest;
 
   /* 해당 서비스 상품 주문 여부 */
   private boolean purchaseYn;
 
-  public static ServiceProduct of(Company company, AddServiceProductForm form) {
+  public static ServiceProduct of(Company company, AddServiceProductForm form, CustomerRequest customerRequest) {
     return ServiceProduct.builder()
         .company(company)
         .productOptions(
@@ -74,7 +78,8 @@ public class ServiceProduct extends BaseEntity {
         .outlineDescription(form.getOutlineDescription())
         .productPrice(form.getProductPrice())
         .executeDate(form.getExecuteDate())
-        .serviceRequestId(form.getServiceRequestId())
+//        .serviceRequestId(form.getServiceRequestId())
+        .customerRequest(customerRequest)
         .purchaseYn(false)
         .build();
   }

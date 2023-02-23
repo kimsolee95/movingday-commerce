@@ -42,7 +42,7 @@ public class ServiceProductResponse {
         .outlineDescription(serviceProduct.getOutlineDescription())
         .productPrice(serviceProduct.getProductPrice())
         .executeDate(serviceProduct.getExecuteDate())
-        .serviceRequestId(serviceProduct.getServiceRequestId())
+        .serviceRequestId(serviceProduct.getCustomerRequest().getId())
         .build();
   }
 
