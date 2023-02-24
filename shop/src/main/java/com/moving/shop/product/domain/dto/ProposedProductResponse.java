@@ -17,6 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProposedProductResponse {
 
+  /* 서비스상품 id */
+  private Long id;
+
   /* 서비스상품명 */
   private String name;
 
@@ -42,6 +45,7 @@ public class ProposedProductResponse {
 
   private static ProposedProductResponse from(ServiceProduct serviceProduct) {
     return ProposedProductResponse.builder()
+        .id(serviceProduct.getId())
         .name(serviceProduct.getName())
         .outlineDescription(serviceProduct.getOutlineDescription())
         .productPrice(serviceProduct.getProductPrice())
