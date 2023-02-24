@@ -3,6 +3,7 @@ package com.moving.shop.product.controller;
 import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_HEADER;
 import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREFIX;
 
+import com.moving.shop.product.domain.dto.ProposedProductResponse;
 import com.moving.shop.product.service.CustomerProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CustomerProductController {
   public ResponseEntity<?> showReceivedServiceProduct(@RequestHeader(value = TOKEN_HEADER) String token) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
-    return ResponseEntity.ok(customerProductService.findByCustomerId(refinedToken));
+    return ResponseEntity.ok(ProposedProductResponse.from(customerProductService.findByCustomerId(refinedToken)));
   }
 
 }
