@@ -1,5 +1,6 @@
 package com.moving.shop.product.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.company.domain.entity.Company;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
@@ -38,12 +39,13 @@ public class ServiceProduct extends BaseEntity {
 
   /* 업체 ID */
   @ManyToOne
-  @JoinColumn(name = "companyId")
+  @JoinColumn(name = "company_id")
   private Company company;
 
   /* 서비스상품_옵션 */
+  @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "serviceProductId")
+  @JoinColumn(name = "service_product_id")
   private List<ProductOption> productOptions = new ArrayList<>();
 
   /* 서비스상품명 */
@@ -61,7 +63,7 @@ public class ServiceProduct extends BaseEntity {
   /* 고객 서비스 요청서 */
 //  private Long serviceRequestId;
   @ManyToOne
-  @JoinColumn(name = "customerRequestId")
+  @JoinColumn(name = "customer_request_id")
   private CustomerRequest customerRequest;
 
   /* 해당 서비스 상품 주문 여부 */

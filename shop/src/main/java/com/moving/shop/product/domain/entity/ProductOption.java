@@ -30,7 +30,7 @@ public class ProductOption extends BaseEntity {
 
   /* 서비스상품 ID */
   @ManyToOne
-  @JoinColumn(name = "serviceProductId")
+  @JoinColumn(name = "service_product_id")
   private ServiceProduct serviceProduct;
 
   /* 상품옵션명 */
