@@ -91,6 +91,8 @@ class CompanyProductServiceTest {
     //then
     assertNotNull(serviceProduct);
     assertEquals(serviceProduct.getProductPrice(), addServiceProductForm.getProductPrice());
+    assertNotNull(serviceProduct.getProductOptions());
+    assertEquals(serviceProduct.getProductOptions().size(), 2);
   }
 
   @Test

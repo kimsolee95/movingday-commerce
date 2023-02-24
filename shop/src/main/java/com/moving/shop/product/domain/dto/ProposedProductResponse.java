@@ -1,5 +1,7 @@
 package com.moving.shop.product.domain.dto;
 
+import com.moving.shop.company.domain.dto.CompanyInformationForm;
+import com.moving.shop.company.domain.entity.Company;
 import com.moving.shop.product.domain.entity.ServiceProduct;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,10 +15,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceProductResponse {
+public class ProposedProductResponse {
 
-  /* 서비스상품_옵션 */
-  private List<ProductOptionResponse> productOptionResponses;
+  /* 서비스상품 id */
+  private Long id;
 
   /* 서비스상품명 */
   private String name;
@@ -33,17 +35,22 @@ public class ServiceProductResponse {
   /* 고객 서비스 요청서 ID */
   private Long serviceRequestId;
 
-  public static ServiceProductResponse from(ServiceProduct serviceProduct) {
-    return ServiceProductResponse.builder()
-        .productOptionResponses(serviceProduct.getProductOptions().stream()
-            .map(productOption -> ProductOptionResponse.from(productOption))
-            .collect(Collectors.toList()))
+  private CompanyInformationForm companyInfo;
+
+  public static List<ProposedProductResponse> from(List<ServiceProduct> serviceProducts) {
+
+    return serviceProducts.stream().map(serviceProduct -> from(serviceProduct))
+        .collect(Collectors.toList());
+  }
+
+  private static ProposedProductResponse from(ServiceProduct serviceProduct) {
+    return ProposedProductResponse.builder()
+        .id(serviceProduct.getId())
         .name(serviceProduct.getName())
         .outlineDescription(serviceProduct.getOutlineDescription())
         .productPrice(serviceProduct.getProductPrice())
         .executeDate(serviceProduct.getExecuteDate())
-        .serviceRequestId(serviceProduct.getCustomerRequest().getId())
+        .companyInfo(CompanyInformationForm.from(serviceProduct.getCompany()))
         .build();
   }
-
 }
