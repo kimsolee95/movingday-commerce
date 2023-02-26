@@ -86,4 +86,8 @@ public class ServiceProduct extends BaseEntity {
         .build();
   }
 
+  public static void buyServiceProduct(ServiceProduct serviceProduct) {
+    serviceProduct.setPurchaseYn(true);
+  }
+
 }

@@ -50,4 +50,27 @@ public class CustomerCashServiceImpl implements CustomerCashService {
     cashBalanceHistoryRepository.save(cashBalanceHistory);
     return form;
   }
+
+  @Override
+  public CashBalanceHistory changeCashBalance(Customer customer, ChangeCashForm form) {
+
+    CashBalanceHistory cashBalanceHistory = cashBalanceHistoryRepository.findFirstByCustomer_IdOrderByIdDesc(customer.getId())
+        .orElseGet(() -> CashBalanceHistory.initCashBalanceHistory(customer));
+
+    if (cashBalanceHistory.getCurrentCash() + form.getCash() < 0) {
+      throw new CustomerException(CustomerErrorCode.SHORT_OF_BALANCE);
+    }
+
+    cashBalanceHistory = CashBalanceHistory.builder()
+        .changeCash(form.getCash())
+        .currentCash(cashBalanceHistory.getCurrentCash() + form.getCash())
+        .description(form.getDescription())
+        .fromWhom(form.getFromWhom())
+        .customer(customer)
+        .build();
+
+    customer.changeCash(cashBalanceHistory.getCurrentCash());
+    return cashBalanceHistoryRepository.save(cashBalanceHistory);
+  }
+
 }

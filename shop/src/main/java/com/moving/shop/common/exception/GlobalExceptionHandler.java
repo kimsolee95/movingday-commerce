@@ -2,6 +2,7 @@ package com.moving.shop.common.exception;
 
 import com.moving.shop.common.exception.customexception.CompanyException;
 import com.moving.shop.common.exception.customexception.CustomerException;
+import com.moving.shop.common.exception.customexception.OrderException;
 import com.moving.shop.common.exception.model.ErrorResponse;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,21 @@ public class GlobalExceptionHandler {
         .body(ErrorResponse.builder()
             .code(e.getCompanyErrorCode().name())
             .message(e.getCompanyErrorCode().getDescription())
+            .status(e.getStatus())
+            .build());
+  }
+
+  /**
+   * order exception 핸들러
+   * */
+  @ExceptionHandler({OrderException.class})
+  public ResponseEntity<ErrorResponse> orderExceptionHandler(HttpServletRequest request,
+      OrderException e) {
+
+    return ResponseEntity.status(e.getStatus())
+        .body(ErrorResponse.builder()
+            .code(e.getOrderErrorCode().name())
+            .message(e.getOrderErrorCode().getDescription())
             .status(e.getStatus())
             .build());
   }
