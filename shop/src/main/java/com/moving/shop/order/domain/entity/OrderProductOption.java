@@ -1,7 +1,8 @@
-package com.moving.shop.product.domain.entity;
+package com.moving.shop.order.domain.entity;
 
 import com.moving.shop.common.BaseEntity;
-import com.moving.shop.product.domain.dto.AddProductOptionForm;
+import com.moving.shop.order.domain.dto.AddOrderProductOptionForm;
+import com.moving.shop.product.domain.entity.ProductOption;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,16 +23,16 @@ import org.hibernate.envers.AuditOverride;
 @NoArgsConstructor
 @AllArgsConstructor
 @AuditOverride(forClass = BaseEntity.class)
-public class ProductOption extends BaseEntity {
+public class OrderProductOption extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  /* 서비스상품 ID */
+  /* 주문서비스상품 ID */
   @ManyToOne
-  @JoinColumn(name = "service_product_id")
-  private ServiceProduct serviceProduct;
+  @JoinColumn(name = "order_product_id")
+  private OrderProduct orderProduct;
 
   /* 상품옵션명 */
   private String name;
@@ -39,19 +40,10 @@ public class ProductOption extends BaseEntity {
   /* 상품옵션 가격 */
   private int optionPrice;
 
-  /* 상품옵션 주문여부 */
-  private boolean purchaseYn;
-
-  public static ProductOption from(AddProductOptionForm form) {
-    return ProductOption.builder()
-        .name(form.getName())
-        .optionPrice(form.getOptionPrice())
-        .purchaseYn(false)
+  public static OrderProductOption from(ProductOption productOption) {
+    return OrderProductOption.builder()
+        .name(productOption.getName())
+        .optionPrice(productOption.getOptionPrice())
         .build();
   }
-
-  public static void buyOption(ProductOption productOption) {
-    productOption.setPurchaseYn(true);
-  }
-
 }
