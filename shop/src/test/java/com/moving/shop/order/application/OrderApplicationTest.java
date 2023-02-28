@@ -15,8 +15,10 @@ import com.moving.shop.customer.domain.dto.ChangeCashForm;
 import com.moving.shop.customer.domain.dto.CustomerRequestForm;
 import com.moving.shop.customer.domain.dto.SignInForm;
 import com.moving.shop.customer.domain.dto.SignUpForm;
+import com.moving.shop.customer.domain.entity.CashBalanceHistory;
 import com.moving.shop.customer.domain.entity.Customer;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
+import com.moving.shop.customer.domain.repository.CashBalanceHistoryRepository;
 import com.moving.shop.customer.domain.repository.CustomerRepository;
 import com.moving.shop.customer.domain.repository.CustomerRequestRepository;
 import com.moving.shop.customer.service.CustomerCashService;
@@ -48,6 +50,9 @@ class OrderApplicationTest {
 
   @Autowired
   private OrderApplication orderApplication;
+
+  @Autowired
+  private CashBalanceHistoryRepository cashBalanceHistoryRepository;
 
   @Autowired
   private CustomerCashService customerCashService;
@@ -97,9 +102,15 @@ class OrderApplicationTest {
 
     ServiceOrder serviceOrder = orderApplication.takeOrder(customersJwt, orderForm);
 
+    Customer customer = loginCustomerInfo(customersJwt);
+    CashBalanceHistory cashBalanceHistory = cashBalanceHistoryRepository.findFirstByCustomer_IdOrderByIdDesc(customer.getId())
+        .orElseThrow(() -> new CustomerException(CustomerErrorCode.NOT_CORRECT_INPUT));
+
     //then
     assertNotNull(serviceOrder);
     assertEquals(serviceOrder.getCustomerRequest().getId(), orderForm.getCustomerRequestId());
+    assertEquals(-orderForm.getProductPrice(), cashBalanceHistory.getChangeCash());
+    assertEquals(customer.getBalanceCash(), cashBalanceHistory.getCurrentCash());
   }
 
   private AddOrderProductForm makeOrderForm(String customersJwt) {
@@ -242,6 +253,14 @@ class OrderApplicationTest {
         .fromWhom("TEST-USER")
         .build();
     customerCashService.changeCashBalance(customersJwt, changeCashForm);
+  }
+
+  private Customer loginCustomerInfo(String customersJwt) {
+
+    String email = tokenProvider.getUsername(customersJwt);
+    Customer customer = customerRepository.findByEmail(email)
+        .orElseThrow(() -> new CustomerException(CustomerErrorCode.NOT_EXIST_MEMBER));
+    return customer;
   }
 
 }
