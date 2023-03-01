@@ -24,7 +24,7 @@ public class ChatRoom implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private String id;
+  private Long id;
 
   private static final long serialVersionUID = 6494678977089006639L;
 
@@ -38,13 +38,13 @@ public class ChatRoom implements Serializable {
   @JoinColumn(name = "service_product_id")
   private ServiceProduct serviceProduct;
 
-  public static ChatRoom create(String name, Long customerId, Long companyId) {
+  public static ChatRoom create(ServiceProduct serviceProduct, String name, Long customerId, Long companyId) {
 
     return ChatRoom.builder()
-        .id(UUID.randomUUID().toString())
         .name(name)
         .customerId(customerId)
         .companyId(companyId)
+        .serviceProduct(serviceProduct)
         .build();
   }
 

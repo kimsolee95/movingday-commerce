@@ -11,6 +11,8 @@ import com.moving.shop.product.domain.dto.AddServiceProductForm;
 import com.moving.shop.product.domain.entity.ServiceProduct;
 import com.moving.shop.product.domain.repository.ServiceProductRepository;
 import com.moving.shop.product.service.CompanyProductService;
+import com.moving.shop.servicechat.domain.entity.ChatRoom;
+import com.moving.shop.servicechat.domain.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class CompanyProductServiceImpl implements CompanyProductService {
   private final ServiceProductRepository serviceProductRepository;
   private final CustomerRequestRepository customerRequestRepository;
   private final TokenProvider tokenProvider;
+  private final ChatRoomRepository chatRoomRepository;
 
   @Override
   public ServiceProduct addServiceProduct(String refinedToken, AddServiceProductForm form) {
@@ -39,6 +42,11 @@ public class CompanyProductServiceImpl implements CompanyProductService {
     CustomerRequest customerRequest = customerRequestRepository.findById(form.getServiceRequestId())
         .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_REQUEST_NOT_EXIST));
 
-    return serviceProductRepository.save(ServiceProduct.of(company, form, customerRequest));
+    ServiceProduct serviceProduct = serviceProductRepository.save(ServiceProduct.of(company, form, customerRequest));
+
+    //상품에 대한 채팅방 생성
+    chatRoomRepository.save(ChatRoom.create(serviceProduct, form.getName(), customerRequest.getCustomer().getId(), company.getId())); //String name, Long customerId, Long companyId
+    //상품 save
+    return serviceProduct;
   }
 }

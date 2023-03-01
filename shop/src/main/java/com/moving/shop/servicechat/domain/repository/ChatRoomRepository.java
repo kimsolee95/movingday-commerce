@@ -1,38 +1,10 @@
 package com.moving.shop.servicechat.domain.repository;
 
-import com.moving.shop.servicechat.domain.dto.ChatRoom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import com.moving.shop.servicechat.domain.entity.ChatRoom;
 import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class ChatRoomRepository { //for test class
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-  private Map<String, ChatRoom> chatRoomMap;
-
-  @PostConstruct
-  private void init() {
-    chatRoomMap = new LinkedHashMap<>();
-  }
-
-  public List<ChatRoom> findAllRoom() {
-    List chatRooms = new ArrayList<>(chatRoomMap.values());
-    Collections.reverse(chatRooms);
-    return chatRooms;
-  }
-
-  public ChatRoom findRoomById(String id) {
-    return chatRoomMap.get(id);
-  }
-
-  public ChatRoom createChatRoom(String name) {
-    ChatRoom chatRoom = ChatRoom.create(name);
-    chatRoomMap.put(chatRoom.getRoomId(), chatRoom);
-    return chatRoom;
-  }
-
+  List<ChatRoom> findAll();
 }
