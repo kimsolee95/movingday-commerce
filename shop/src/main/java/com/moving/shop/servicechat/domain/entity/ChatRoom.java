@@ -1,5 +1,6 @@
 package com.moving.shop.servicechat.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.moving.shop.product.domain.entity.ServiceProduct;
 import java.io.Serializable;
 import java.util.UUID;
@@ -20,13 +21,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom implements Serializable {
+public class ChatRoom {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  private static final long serialVersionUID = 6494678977089006639L;
 
   private String name;
 
@@ -34,6 +33,7 @@ public class ChatRoom implements Serializable {
 
   private Long companyId;
 
+  @JsonIgnore //채팅방 리스트 select 시, 이 부분은 json ignore 처리
   @OneToOne
   @JoinColumn(name = "service_product_id")
   private ServiceProduct serviceProduct;

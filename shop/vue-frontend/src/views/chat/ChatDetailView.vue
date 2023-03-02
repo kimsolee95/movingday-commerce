@@ -72,32 +72,45 @@ export default {
                 this.text = '';
             }
         },
+
         send() {
             console.log("Send message:" + this.message);
             if (this.stompClient && this.stompClient.connected) {
-                const msg = { 
-                // user: {
-                //     id: this.uid
-                // },
+                
+                const msg = {    
                 roomId: this.roomId,
                 message: this.text,
                 writer: 'test'
                 // sendAt: Date.now(),
                 // isRequest: false,
                 };
+
                 this.stompClient.send("/pub/chat/message", JSON.stringify(msg), {});
             }
         }, 
+        
         connect() {
+
             const serverURL = "http://localhost:8081/stomp/chat"
             let socket = new SockJS(serverURL);
             this.stompClient = Stomp.over(socket);
+            
             console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
             this.stompClient.connect(
                 {},
                 frame => {
                 this.connected = true;
                 console.log('소켓 연결 성공', frame);
+
+                //채팅방 입장. (입장 시 메시지 보내기)
+                let msg = { 
+                roomId: this.roomId,
+                message: '입장하였습니다.',
+                writer: 'test',
+                type: 'ENTER'
+                };
+                this.stompClient.send('/pub/chat/enter-room', JSON.stringify(msg));
+
                 this.stompClient.subscribe("/sub/chat/room/" + this.roomId, res => {
                     console.log('구독으로 받은 메시지 입니다.');
                     console.log(JSON.stringify(res.body));
@@ -109,8 +122,7 @@ export default {
                 this.connected = false;
                 } 
             );               
-
-            this.stompClient.send('/pub/chat/enter', {}, JSON.stringify({roomId: this.roomId}));
+        
         }
 
     }

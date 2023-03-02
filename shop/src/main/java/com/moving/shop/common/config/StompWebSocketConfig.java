@@ -12,9 +12,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    //브라우저 test 시, webpack 빌드 결과물(리소스 파일 내)로 진행 -> 서버 포트 8081
     registry.addEndpoint("/stomp/chat")
-        //.setAllowedOrigins("*") //http://localhost:8081
         .setAllowedOriginPatterns("*")
         .withSockJS();
   }
