@@ -4,14 +4,17 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_HEAD
 import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREFIX;
 
 import com.moving.shop.customer.domain.dto.ChangeCashForm;
+import com.moving.shop.customer.domain.dto.CustomerInfo;
 import com.moving.shop.customer.domain.dto.CustomerRequestForm;
 import com.moving.shop.customer.domain.entity.CashBalanceHistory;
 import com.moving.shop.customer.service.CustomerCashService;
 import com.moving.shop.customer.service.CustomerRequestService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -42,6 +45,14 @@ public class CustomerController {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(customerRequestService.addCustomerRequest(refinedToken, form));
+  }
+
+  @GetMapping
+  @PreAuthorize("hasAuthority('CUSTOMER')")
+  public ResponseEntity<CustomerInfo> getCustomerInfo(@RequestHeader(value = TOKEN_HEADER) String token) {
+
+    String refinedToken = token.substring(TOKEN_PREFIX.length());
+    return ResponseEntity.ok(customerRequestService.getCustomerInfo(refinedToken));
   }
 
 }

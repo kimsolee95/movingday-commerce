@@ -41,6 +41,9 @@ public class Company extends BaseEntity {
 
   /* 비밀번호 */
   private String password;
+  
+  /* 업체명 */
+  private String name;
 
   /* 업체 주소 */
   private String address;
@@ -72,6 +75,7 @@ public class Company extends BaseEntity {
         .serviceCategory(form.getServiceCategoryType())
         .email(form.getEmail())
         .password(encodedPassword)
+        .name(form.getName())
         .address(form.getAddress())
         .addressDetail(form.getAddressDetail())
         .zipcode(form.getZipcode())

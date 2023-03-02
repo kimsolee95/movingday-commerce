@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +35,7 @@ public class ChatRoom {
   private Long companyId;
 
   @JsonIgnore //채팅방 리스트 select 시, 이 부분은 json ignore 처리
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "service_product_id")
   private ServiceProduct serviceProduct;
 

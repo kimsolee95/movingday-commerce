@@ -31,7 +31,7 @@ export default {
     methods: {
 
         getChatList() {
-            this.$axios.get('/api/chat/rooms/customer', {params: this.requestBody, headers: {}})
+            this.$axios.get('/api/chat/rooms/company', {params: this.requestBody, headers: {}})
             .then((res) => {
                 this.chatList = res.data;
             }).catch((err) => {
@@ -42,7 +42,7 @@ export default {
         enterChatRoom(id) {
             this.requestBody.id = id;
             this.$router.push({
-                name: 'chatroom',
+                name: 'companyChatroom',
                 query: this.requestBody
             })
         }

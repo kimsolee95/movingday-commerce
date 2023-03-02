@@ -22,6 +22,9 @@ public class CompanySignUpForm {
   /* 비밀번호 */
   private String password;
 
+  /* 업체명 */
+  private String name;
+
   /* 업체 주소 */
   private String address;
 

@@ -7,7 +7,7 @@
         <b-list-group-item class="d-flex align-items-center">
             <b-avatar variant="primary" text="BV" class="mr-3"></b-avatar>
             <span class="mr-3">박테스트님</span>
-            <b-alert show variant="warning">안녕하세요, 서비스 문의드립니다.</b-alert>
+            <b-alert show variant="warning">업체측 화면단</b-alert>
         </b-list-group-item>
 
         <b-list-group-item class="d-flex align-items-center">
@@ -22,8 +22,8 @@
             <span v-if="message.writer == userInfo.name" class="mr-3"> {{ userInfo.name }} 님</span>
             <span v-else class="mr-3"> {{ message.writer }} 님</span>
             
-            <b-alert v-if="message.writer == userInfo.name" show variant="warning">{{ message.message }}</b-alert>
-            <b-alert v-else show variant="secondary">{{ message.message }}</b-alert>
+            <b-alert v-if="message.writer == userInfo.name" show variant="secondary">{{ message.message }}</b-alert>
+            <b-alert v-else show variant="warning">{{ message.message }}</b-alert>
         </b-list-group-item>
 
         </b-list-group>
@@ -73,7 +73,7 @@ export default {
 
         getUserInfo() {
 
-            this.$axios.get('/api/customer', {params: this.requestBody, headers: {}})
+            this.$axios.get('/api/company', {params: this.requestBody, headers: {}})
             .then((res) => {
                 this.userInfo = res.data;
             }).catch((err) => {
