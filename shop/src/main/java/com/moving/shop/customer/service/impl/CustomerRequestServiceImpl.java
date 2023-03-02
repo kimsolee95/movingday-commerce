@@ -3,6 +3,7 @@ package com.moving.shop.customer.service.impl;
 import com.moving.shop.common.exception.customexception.CustomerException;
 import com.moving.shop.common.exception.type.CustomerErrorCode;
 import com.moving.shop.common.security.TokenProvider;
+import com.moving.shop.customer.domain.dto.CustomerInfo;
 import com.moving.shop.customer.domain.dto.CustomerRequestForm;
 import com.moving.shop.customer.domain.entity.Customer;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
@@ -39,5 +40,18 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
         .build();
     customerRequestRepository.save(customerRequest);
     return form;
+  }
+
+  @Override
+  public CustomerInfo getCustomerInfo(String refinedToken) {
+
+    Customer customer = customerRepository.findByEmail(tokenProvider.getUsername(refinedToken))
+        .orElseThrow(() -> new CustomerException(CustomerErrorCode.NOT_EXIST_MEMBER));
+
+    return CustomerInfo.builder()
+        .email(customer.getEmail())
+        .name(customer.getName())
+        .phone(customer.getPhone())
+        .build();
   }
 }

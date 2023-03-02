@@ -6,6 +6,10 @@ import LoginView from "../views/common/LoginView.vue"
 import SignUpCompanyView from "../views/common/SignUpCompanyView.vue"
 import CompanyLoginView from "../views/common/CompanyLoginView.vue"
 import ManagingProductView from "../views/company/ManagingProductView.vue"
+import ChatListView from "../views/chat/ChatListView.vue"
+import ChatRoomView from "../views/chat/ChatDetailView.vue"
+import CompanyChatListView from "../views/chat/CompanyChatListView.vue"
+import CompanyChatRoomView from "../views/chat/CompanyChatDetailView.vue"
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -44,6 +48,26 @@ const routes = [
     path: '/company/service-products',
     name: 'managingServiceProducts',
     component: ManagingProductView
+  },
+  {
+    path: '/chat/list',
+    name: 'chatlist',
+    component: ChatListView
+  },
+  {
+    path: '/chat/room',
+    name: 'chatroom',
+    component: ChatRoomView
+  },
+  {
+    path: '/company/chat/list',
+    name: 'companyChatlist',
+    component: CompanyChatListView
+  },
+  {
+    path: '/company/chat/room',
+    name: 'companyChatroom',
+    component: CompanyChatRoomView
   }
 ]
 
