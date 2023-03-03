@@ -1,5 +1,7 @@
 package com.moving.shop.customer.domain.dto;
 
+import static com.moving.shop.customer.domain.type.ServiceCategory.CLEANING;
+
 import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.customer.domain.type.PlaceShape;
 import com.moving.shop.customer.domain.type.ServiceCategory;
@@ -36,6 +38,27 @@ public class CustomerRequestResponse {
   /* 서비스 장소 구조 */
   private String placeShape;
 
+  private static String readServiceCategory(ServiceCategory serviceCategory) {
+    return CLEANING.equals(serviceCategory) ? "청소" : "인테리어시공";
+  }
+
+  private static String readPlaceShape(PlaceShape placeShape) {
+
+    if (PlaceShape.APARTMENT.equals(placeShape)) {
+      return "아파트";
+    }
+
+    if (PlaceShape.HOUSE.equals(placeShape)) {
+      return "빌라";
+    }
+
+    if (PlaceShape.SINGLE_HOUSE.equals(placeShape)) {
+      return "단독주택";
+    }
+
+    return "기타";
+  }
+
   public static CustomerRequestResponse from(CustomerRequest customerRequest) {
     return CustomerRequestResponse.builder()
         .id(customerRequest.getId())
@@ -43,8 +66,8 @@ public class CustomerRequestResponse {
         .desiredDate(customerRequest.getDesiredDate())
         .detailRequest(customerRequest.getDetailRequest())
         .placeArea(customerRequest.getPlaceArea())
-        .serviceCategory(String.valueOf(customerRequest.getServiceCategory()))
-        .placeShape(String.valueOf(customerRequest.getPlaceShape()))
+        .serviceCategory(readServiceCategory(customerRequest.getServiceCategory()))
+        .placeShape(readPlaceShape(customerRequest.getPlaceShape()))
         .build();
   }
 

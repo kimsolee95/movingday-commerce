@@ -30,6 +30,12 @@
         </router-link>
       </b-navbar-nav>
 
+      <b-navbar-nav v-if="this.$store.state.userStore.userType == 'COMPANY'">
+        <router-link to="/company/requests">
+        <b-nav-item href="/company/requests">고객 견적문의서</b-nav-item>
+        </router-link>
+      </b-navbar-nav>
+
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
         <b-nav-form>

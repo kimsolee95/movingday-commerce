@@ -10,6 +10,7 @@ import ChatListView from "../views/chat/ChatListView.vue"
 import ChatRoomView from "../views/chat/ChatDetailView.vue"
 import CompanyChatListView from "../views/chat/CompanyChatListView.vue"
 import CompanyChatRoomView from "../views/chat/CompanyChatDetailView.vue"
+import CustomerRequestListView from "../views/company/CustomerRequestListView.vue"
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -68,6 +69,11 @@ const routes = [
     path: '/company/chat/room',
     name: 'companyChatroom',
     component: CompanyChatRoomView
+  },
+  {
+    path: '/company/requests',
+    name: 'requestList',
+    component: CustomerRequestListView
   }
 ]
 
