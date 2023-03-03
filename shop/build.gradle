@@ -52,9 +52,9 @@ dependencies {
 	implementation ('it.ozimov:embedded-redis:0.7.1') {
 		exclude group: 'org.slf4j', module: 'slf4j-simple'
 	}
-	testImplementation ('it.ozimov.embedded-redis:0.7.1') {
-		exclude group: "org.slf4j", module: "slf4j-simple"
-	}
+//	testImplementation ('it.ozimov.embedded-redis:0.7.1') {
+//		exclude group: "org.slf4j", module: "slf4j-simple"
+//	}
 
 	//webSocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'

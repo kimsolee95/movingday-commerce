@@ -59,7 +59,7 @@ export default {
 
           if(response.status === 200) {
             console.log(JSON.stringify(response.data));
-            this.$store.commit('setToken', response.data);
+            this.$store.commit('setCompanyToken', response.data);
             this.$router.push("/"); //로그인 성공하면 main page 이동
           }
         })

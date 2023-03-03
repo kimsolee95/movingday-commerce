@@ -4,16 +4,28 @@ const userStore = {
     
     state: {
 
-        token: ''
+        token: '',
+        isLogin: false,
+        userType: ''
     },
     mutations: {
     
         setToken: function(state, payload) {
             state.token = payload;
+            state.isLogin = true;
+            state.userType = 'CUSTOMER';
+        },
+
+        setCompanyToken: function(state, payload) {
+            state.token = payload;
+            state.isLogin = true;
+            state.userType = 'COMPANY';
         },
 
         clearToken: function(state) {
             state.token = '';
+            state.isLogin = false;
+            state.userType = '';
         }
     },
     actions: {
