@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="login-page">
-      <h2>Log In</h2>
+      <h2>Log In (Customer) </h2>
       <div id="loginForm">
         <form @submit.prevent="fnLogin">
 
@@ -18,6 +18,10 @@
           <div>
             <b-button block variant="success" @click="login()">Login</b-button>
           </div>
+
+          <router-link to="/login/company">
+          <b-button variant="info" id="company-link-btn">업체회원이신가요? 업체회원으로 로그인하기</b-button>
+          </router-link>
 
         </form>
       </div>
@@ -88,5 +92,9 @@ export default {
 
 #login-page {
   padding-top: 70px;
+}
+
+#company-link-btn {
+  margin-top: 30px;
 }
 </style>

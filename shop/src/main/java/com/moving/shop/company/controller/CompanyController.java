@@ -5,6 +5,7 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREF
 
 import com.moving.shop.company.domain.dto.CompanyInfo;
 import com.moving.shop.company.service.CompanyService;
+import com.moving.shop.customer.service.CustomerRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,12 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompanyController {
 
   private final CompanyService companyService;
+  private final CustomerRequestService customerRequestService;
 
   @GetMapping
   @PreAuthorize("hasAuthority('COMPANY')")
-  public ResponseEntity<CompanyInfo> getCustomerInfo(@RequestHeader(value = TOKEN_HEADER) String token) {
+  public ResponseEntity<CompanyInfo> getCompanyInfo(@RequestHeader(value = TOKEN_HEADER) String token) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(companyService.getCompanyInfo(refinedToken));
   }
+
+  @GetMapping("/customer-requests")
+  @PreAuthorize("hasAuthority('COMPANY')")
+  public ResponseEntity<?> getCustomerRequests(@RequestHeader(value = TOKEN_HEADER) String token) {
+    return ResponseEntity.ok(customerRequestService.getCustomerRequests());
+  }
+
 }

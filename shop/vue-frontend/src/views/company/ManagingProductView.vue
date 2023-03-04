@@ -122,7 +122,7 @@
           }
         ],
 
-        serviceRequestId: 1 //todo: 추후 prop으로 받아와서 값 바꿔주어야 함.
+        serviceRequestId: this.$route.query.id
 
       }
     },

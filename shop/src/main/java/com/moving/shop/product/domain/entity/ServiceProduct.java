@@ -1,6 +1,7 @@
 package com.moving.shop.product.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.company.domain.entity.Company;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
@@ -43,7 +44,8 @@ public class ServiceProduct extends BaseEntity {
   private Company company;
 
   /* 서비스상품_옵션 */
-  @JsonIgnore
+//  @JsonIgnore
+  @JsonManagedReference //양방향 매핑 시 순환참조 방지
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "service_product_id")
   private List<ProductOption> productOptions = new ArrayList<>();

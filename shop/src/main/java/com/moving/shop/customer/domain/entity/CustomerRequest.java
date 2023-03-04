@@ -1,5 +1,6 @@
 package com.moving.shop.customer.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.customer.domain.type.PlaceShape;
 import com.moving.shop.customer.domain.type.ServiceCategory;
@@ -34,6 +35,7 @@ public class CustomerRequest extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @JsonIgnore
   @ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
   private Customer customer;
 
