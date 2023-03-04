@@ -6,4 +6,6 @@ import java.util.List;
 public interface CustomerProductService {
 
   List<ServiceProduct> findByCustomerId(String refinedToken);
+
+  ServiceProduct findWithProductOptionsById(Long serviceProductId);
 }

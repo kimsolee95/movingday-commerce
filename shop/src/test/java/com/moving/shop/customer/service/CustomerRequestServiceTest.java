@@ -60,8 +60,8 @@ class CustomerRequestServiceTest {
     List<CustomerRequestResponse> customerRequestResponse = customerRequestService.getCustomerRequests();
     assertEquals(23, customerRequestResponse.get(0).getPlaceArea());
     assertEquals("경기 가평", customerRequestResponse.get(0).getServiceAddress());
-    assertEquals("CLEANING", customerRequestResponse.get(0).getServiceCategory());
-    assertEquals("HOUSE", customerRequestResponse.get(0).getPlaceShape());
+    assertEquals("청소", customerRequestResponse.get(0).getServiceCategory());
+    assertEquals("빌라", customerRequestResponse.get(0).getPlaceShape());
   }
 
   private CustomerRequest makeCustomerRequest() {

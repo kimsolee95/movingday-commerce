@@ -1,6 +1,7 @@
 package com.moving.shop.product.service.impl;
 
 import com.moving.shop.common.exception.customexception.CustomerException;
+import com.moving.shop.common.exception.customexception.OrderException;
 import com.moving.shop.common.exception.type.CustomerErrorCode;
 import com.moving.shop.common.security.TokenProvider;
 import com.moving.shop.customer.domain.entity.Customer;
@@ -28,5 +29,14 @@ public class CustomerProductServiceImpl implements CustomerProductService {
         .orElseThrow(() -> new CustomerException(CustomerErrorCode.NOT_EXIST_MEMBER));
 
     return serviceProductRepository.findByCustomerId(customer.getId());
+  }
+
+  @Override
+  public ServiceProduct findWithProductOptionsById(Long serviceProductId) {
+
+    ServiceProduct serviceProductWithOptions = serviceProductRepository.findWithProductOptionsById(serviceProductId)
+        .orElseThrow(() -> new CustomerException(CustomerErrorCode.NOT_CORRECT_INPUT));
+
+    return serviceProductWithOptions;
   }
 }

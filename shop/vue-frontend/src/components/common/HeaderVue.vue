@@ -19,6 +19,12 @@
       </b-navbar-nav>
 
       <b-navbar-nav v-if="this.$store.state.userStore.userType == 'CUSTOMER'">
+        <router-link to="/customer/receivedProducts">
+        <b-nav-item href="/customer/receivedProducts">제안 상품목록</b-nav-item>
+        </router-link>
+      </b-navbar-nav>
+
+      <b-navbar-nav v-if="this.$store.state.userStore.userType == 'CUSTOMER'">
         <router-link to="/chat/list">
         <b-nav-item href="/chat/list">상품 1:1 문의</b-nav-item>
         </router-link>

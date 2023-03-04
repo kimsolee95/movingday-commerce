@@ -16,6 +16,9 @@ public class CompanyInformationForm {
   /* 가입 이메일 */
   private String email;
 
+  /* 업체명 */
+  private String name;
+  
   /* 서비스카테고리 */
   private ServiceCategory serviceCategory;
 
@@ -32,6 +35,7 @@ public class CompanyInformationForm {
     return CompanyInformationForm.builder()
         .serviceCategory(company.getServiceCategory())
         .email(company.getEmail())
+        .name(company.getName())
         .address(company.getAddress())
         .tel(company.getTel())
         .introduction(company.getIntroduction())

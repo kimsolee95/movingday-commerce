@@ -1,5 +1,6 @@
 package com.moving.shop.company.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.company.domain.dto.CompanySignUpForm;
 import com.moving.shop.customer.domain.type.MemberType;
@@ -40,6 +41,7 @@ public class Company extends BaseEntity {
   private String email;
 
   /* 비밀번호 */
+  @JsonIgnore
   private String password;
   
   /* 업체명 */
@@ -61,6 +63,7 @@ public class Company extends BaseEntity {
   private String introduction;
 
   /* 업체 승인여부 */
+  @JsonIgnore
   private boolean approvalYn;
 
   /* 사업자번호 */

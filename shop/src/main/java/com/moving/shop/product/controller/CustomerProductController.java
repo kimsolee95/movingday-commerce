@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,12 @@ public class CustomerProductController {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(ProposedProductResponse.from(customerProductService.findByCustomerId(refinedToken)));
+  }
+
+  @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('CUSTOMER')")
+  public ResponseEntity<?> getCustomersReceivedProduct(@PathVariable("id")Long serviceProductId) {
+    return ResponseEntity.ok(customerProductService.findWithProductOptionsById(serviceProductId));
   }
 
 }
