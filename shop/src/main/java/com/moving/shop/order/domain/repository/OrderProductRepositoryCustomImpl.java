@@ -26,7 +26,8 @@ public class OrderProductRepositoryCustomImpl implements OrderProductRepositoryC
     QServiceProduct serviceProduct = QServiceProduct.serviceProduct;
 
     List<SubmittedOrders> orderProducts = jpaQueryFactory
-        .select(new QSubmittedOrders(orderProduct.id, orderProduct.orderPrice, orderProduct.executeDate, orderProduct.serviceOrder.id))
+        .select(new QSubmittedOrders(orderProduct.id, orderProduct.orderPrice, orderProduct.executeDate, orderProduct.serviceOrder.id,
+            serviceProduct.name))
         .from(orderProduct)
         .join(orderProduct.serviceProduct, serviceProduct)
         .on(orderProduct.serviceProduct.company.id.eq(companyId)) //where

@@ -19,12 +19,16 @@ public class SubmittedOrders {
   /* 주문 ID */
   private Long serviceOrderId;
 
+  /* 서비스상품명 */
+  private String serviceProductName;
+
   @QueryProjection
-  public SubmittedOrders(Long orderProductId, int orderPrice, LocalDateTime executeDate, Long serviceOrderId) {
+  public SubmittedOrders(Long orderProductId, int orderPrice, LocalDateTime executeDate, Long serviceOrderId, String serviceProductName) {
     this.orderProductId = orderProductId;
     this.orderPrice = orderPrice;
     this.executeDate = executeDate;
     this.serviceOrderId = serviceOrderId;
+    this.serviceProductName = serviceProductName;
   }
 
 }
