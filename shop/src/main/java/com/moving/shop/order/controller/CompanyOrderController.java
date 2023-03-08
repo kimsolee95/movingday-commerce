@@ -31,7 +31,7 @@ public class CompanyOrderController {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     companyOrderService.completeServiceOrder(refinedToken, form);
-    return ResponseEntity.ok("");
+    return ResponseEntity.ok("확인");
   }
 
   @GetMapping

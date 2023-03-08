@@ -65,6 +65,9 @@ dependencies {
 
 	//feign
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	//httpClient
+	implementation 'org.apache.httpcomponents:httpclient:4.5'
 }
 
 dependencyManagement {

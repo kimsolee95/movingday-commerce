@@ -3,6 +3,7 @@ package com.moving.shop.order.domain.entity;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.order.domain.type.OrderStatus;
+import java.security.Provider.Service;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -55,5 +56,10 @@ public class ServiceOrder extends BaseEntity {
         .serviceAddress(customerRequest.getServiceAddress())
         .customerRequest(customerRequest)
         .build();
+  }
+
+  //setter 없이 entity update
+  public void completeServiceOrder(OrderStatus orderStatus) {
+    this.orderStatus = orderStatus;
   }
 }
