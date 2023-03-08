@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class OrderProductRepositoryCustomImpl implements OrderProductRepositoryCustom {
 
-
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override

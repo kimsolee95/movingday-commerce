@@ -11,6 +11,7 @@ import com.moving.shop.common.service.SmsService;
 import com.moving.shop.company.domain.entity.Company;
 import com.moving.shop.company.domain.repository.CompanyRepository;
 import com.moving.shop.order.domain.dto.CompleteOrderForm;
+import com.moving.shop.order.domain.dto.CustomerInfoByServiceOrder;
 import com.moving.shop.order.domain.dto.SubmittedOrders;
 import com.moving.shop.order.domain.entity.CompletionOrder;
 import com.moving.shop.order.domain.entity.OrderProduct;
@@ -55,7 +56,6 @@ public class CompanyOrderServiceImpl implements CompanyOrderService {
   public CompletionOrder completeServiceOrder(String refinedToken, CompleteOrderForm form) {
 
     //1. 고객 제외 확인으로 data save
-
     //order info
     ServiceOrder serviceOrder = serviceOrderRepository.findById(form.getServiceOrderId())
             .orElseThrow(() -> new OrderException(OrderErrorCode.NOT_COMPLETE_ORDER));
@@ -76,11 +76,13 @@ public class CompanyOrderServiceImpl implements CompanyOrderService {
     serviceOrder.completeServiceOrder(OrderStatus.COMPLETE);
 
     //2. 해당 고객에게 message 확인 발송
+    //find customer
+    CustomerInfoByServiceOrder customerInfo = serviceOrderRepository.getCustomerInfoByServiceOrderId(serviceOrder.getId());
 
     try {
       smsService.sendSms(SmsMessageForm.builder()
           .content("[서비스 완료]\n 주문하신 서비스가 완료되었음을 아래 링크를 클릭하여 확인해주세요")
-          .to("01047176208") //customer`s phone
+          .to(customerInfo.getPhone()) //customer`s phone
           .build());
     } catch (JsonProcessingException e) {
       e.printStackTrace();
