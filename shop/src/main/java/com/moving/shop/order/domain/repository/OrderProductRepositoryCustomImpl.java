@@ -35,7 +35,6 @@ public class OrderProductRepositoryCustomImpl implements OrderProductRepositoryC
         .join(orderProduct.serviceOrder, serviceOrder)
         .on(serviceOrder.orderStatus.eq(OrderStatus.valueOf("SUBMIT"))) //where
         .fetch();
-
     return orderProducts;
   }
 }
