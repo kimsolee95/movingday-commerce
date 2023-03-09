@@ -1,5 +1,6 @@
 package com.moving.shop.order.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.order.domain.dto.AddOrderProductOptionForm;
 import com.moving.shop.product.domain.entity.ProductOption;
@@ -30,6 +31,7 @@ public class OrderProductOption extends BaseEntity {
   private Long id;
 
   /* 주문서비스상품 ID */
+  @JsonBackReference //양방향 매핑 시 순환참조 방지
   @ManyToOne
   @JoinColumn(name = "order_product_id")
   private OrderProduct orderProduct;

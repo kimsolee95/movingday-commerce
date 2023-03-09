@@ -1,5 +1,6 @@
 package com.moving.shop.order.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.order.domain.dto.AddOrderProductForm;
 import com.moving.shop.product.domain.entity.ProductOption;
@@ -44,6 +45,7 @@ public class OrderProduct extends BaseEntity {
   private LocalDateTime executeDate;
 
   /* 주문서비스상품옵션 */
+  @JsonManagedReference //양방향 매핑 시 순환참조 방지
   @OneToMany(cascade = CascadeType.ALL) //mappedBy = "orderProduct",
   @JoinColumn(name = "order_product_id")
   private List<OrderProductOption> orderProductOptions = new ArrayList<>();

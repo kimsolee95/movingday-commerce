@@ -3,10 +3,12 @@ package com.moving.shop.order.domain.entity;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.order.domain.type.OrderStatus;
+import java.security.Provider.Service;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +42,7 @@ public class ServiceOrder extends BaseEntity {
   private LocalDateTime orderDate;
 
   /* 고객 서비스요청서 ID */
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "customer_request_id")
   private CustomerRequest customerRequest;
 
@@ -54,5 +56,10 @@ public class ServiceOrder extends BaseEntity {
         .serviceAddress(customerRequest.getServiceAddress())
         .customerRequest(customerRequest)
         .build();
+  }
+
+  //setter 없이 entity update
+  public void completeServiceOrder(OrderStatus orderStatus) {
+    this.orderStatus = orderStatus;
   }
 }
