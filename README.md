@@ -30,3 +30,10 @@ Backend와 frontend가 분리된 환경을 만들어보기 위해 Vue.js 2를 �
 - IDE: `IntelliJ IDEA community`
 - Database: `MariaDB`, `Redis`
 - ETC: `Docker`
+
+
+:page_facing_up: 구조
+---
+  ![diagram](https://user-images.githubusercontent.com/65488155/224537300-46319f95-688b-4921-a2e4-1fbf429cc1a4.jpg)
+
+
