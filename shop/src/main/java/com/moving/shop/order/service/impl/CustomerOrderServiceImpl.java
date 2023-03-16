@@ -6,8 +6,10 @@ import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.customer.domain.repository.CustomerRequestRepository;
 import com.moving.shop.order.domain.dto.AddOrderProductForm;
 import com.moving.shop.order.domain.dto.AddOrderProductOptionForm;
+import com.moving.shop.order.domain.entity.CompletionOrder;
 import com.moving.shop.order.domain.entity.OrderProduct;
 import com.moving.shop.order.domain.entity.ServiceOrder;
+import com.moving.shop.order.domain.repository.CompletionOrderRepository;
 import com.moving.shop.order.domain.repository.OrderProductRepository;
 import com.moving.shop.order.domain.repository.ServiceOrderRepository;
 import com.moving.shop.order.service.CustomerOrderService;
@@ -19,11 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerOrderServiceImpl implements CustomerOrderService {
 
+  private final CompletionOrderRepository completionOrderRepository;
   private final OrderProductRepository orderProductRepository;
   private final ServiceProductRepository serviceProductRepository;
   private final ServiceOrderRepository serviceOrderRepository;
@@ -60,6 +64,22 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         OrderProduct.of(serviceOrder, serviceProduct, form, wishOptions));
 
     return serviceOrder;
+  }
+
+  @Transactional
+  @Override
+  public void orderCompletionVerify(String code, Long completionOrderId) {
+
+    CompletionOrder completionOrder = completionOrderRepository.findByIdAndVerificationCode(completionOrderId, code)
+        .orElseThrow(() -> new OrderException(OrderErrorCode.NOT_VALID_REQUEST_INFO));
+
+    if (!completionOrder.isCompanyCheckYn()) {
+      throw new OrderException(OrderErrorCode.NOT_MATCHED_ORDER_INFO);
+    } else if (completionOrder.isCustomerCheckYn()) {
+      throw new OrderException(OrderErrorCode.NOT_MATCHED_ORDER_INFO);
+    }
+
+    completionOrder.customersVerify();
   }
 
   private List<ProductOption> makeValidatedWishOptions(List<AddOrderProductOptionForm> addOrderProductOptionForms) {

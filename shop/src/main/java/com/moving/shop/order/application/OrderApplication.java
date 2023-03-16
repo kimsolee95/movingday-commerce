@@ -53,4 +53,8 @@ public class OrderApplication {
     return serviceOrder;
   }
 
+  public void customerOrderCompletionVerify(String code, Long completionOrderId) {
+    customerOrderService.orderCompletionVerify(code, completionOrderId);
+  }
+
 }

@@ -8,6 +8,7 @@ import com.moving.shop.order.domain.dto.AddOrderProductForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -32,4 +33,11 @@ public class CustomerOrderController {
     return ResponseEntity.ok("");
   }
 
+  @GetMapping("/completion/verify")
+  @PreAuthorize("hasAuthority('CUSTOMER')")
+  public ResponseEntity<?> customerVerifyOrderCompletion(String code, Long completionOrderId) {
+    
+    orderApplication.customerOrderCompletionVerify(code, completionOrderId);
+    return ResponseEntity.ok("고객님의 주문 완료를 확인하였습니다.");
+  }
 }

@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,6 +71,7 @@ public class CompanyOrderServiceImpl implements CompanyOrderService {
             .companyCheckYn(true)
             .customerCheckYn(false)
             .orderPrice(orderProduct.getOrderPrice())
+            .verificationCode(UUID.randomUUID().toString())
         .build());
 
     //service order status update
@@ -80,8 +82,14 @@ public class CompanyOrderServiceImpl implements CompanyOrderService {
     CustomerInfoByServiceOrder customerInfo = serviceOrderRepository.getCustomerInfoByServiceOrderId(serviceOrder.getId());
 
     try {
-      smsService.sendSms(SmsMessageForm.builder()
-          .content("[서비스 완료]\n 주문하신 서비스가 완료되었음을 아래 링크를 클릭하여 확인해주세요")
+      smsService.sendSms(
+          SmsMessageForm.builder()
+          .content(
+              "[서비스 완료]\n 주문하신 서비스가 완료되었음을 아래 링크를 클릭하여 확인해주세요\n" +
+              "주문완료 확인 링크>> http:http://localhost:8081/api/customer/order/completion/verify" +
+              "?" + "code=" + completionOrder.getVerificationCode() +
+              "&id=" + completionOrder.getId()
+          )
           .to(customerInfo.getPhone()) //customer`s phone
           .build());
     } catch (JsonProcessingException e) {
