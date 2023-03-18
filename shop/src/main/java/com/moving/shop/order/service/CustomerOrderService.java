@@ -7,4 +7,5 @@ public interface CustomerOrderService {
 
   ServiceOrder createOrder(AddOrderProductForm form);
 
+  void orderCompletionVerify(String code, Long completionOrderId);
 }

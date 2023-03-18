@@ -40,4 +40,11 @@ public class CompletionOrder extends BaseEntity {
 
   /* 업체 확인 여부 */
   private boolean companyCheckYn;
+
+  /* 주문완료 고객 확인 시 사용 verifycationCode */
+  private String verificationCode;
+
+  public void customersVerify() {
+    this.customerCheckYn = true;
+  }
 }

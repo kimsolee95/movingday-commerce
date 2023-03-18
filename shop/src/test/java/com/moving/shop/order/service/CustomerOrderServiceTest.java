@@ -25,9 +25,12 @@ import com.moving.shop.customer.service.CustomerCashService;
 import com.moving.shop.customer.service.CustomerRequestService;
 import com.moving.shop.order.domain.dto.AddOrderProductForm;
 import com.moving.shop.order.domain.dto.AddOrderProductOptionForm;
+import com.moving.shop.order.domain.dto.CompleteOrderForm;
+import com.moving.shop.order.domain.entity.CompletionOrder;
 import com.moving.shop.order.domain.entity.OrderProduct;
 import com.moving.shop.order.domain.entity.OrderProductOption;
 import com.moving.shop.order.domain.entity.ServiceOrder;
+import com.moving.shop.order.domain.repository.CompletionOrderRepository;
 import com.moving.shop.order.domain.repository.OrderProductOptionRepository;
 import com.moving.shop.order.domain.repository.OrderProductRepository;
 import com.moving.shop.product.domain.dto.AddProductOptionForm;
@@ -51,6 +54,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 class CustomerOrderServiceTest {
+
+  @Autowired
+  private CompletionOrderRepository completionOrderRepository;
+
+  @Autowired
+  private CompanyOrderService companyOrderService;
 
   @Autowired
   private OrderProductOptionRepository orderProductOptionRepository;
@@ -90,6 +99,32 @@ class CustomerOrderServiceTest {
 
   @Autowired
   private TokenProvider tokenProvider;
+
+  @Test
+  void CUSTOMER_COMPLETE_ORDER_TEST() {
+
+    //given
+    ServiceProduct serviceProduct = addServiceProduct();
+
+    //when
+    String customersJwt = loginCustomer();
+    AddOrderProductForm orderProductForm = makeOrderFormWithAllOptions(customersJwt);
+    ServiceOrder serviceOrder = customerOrderService.createOrder(orderProductForm);
+
+    // 업체측에서 주문 완료 확인 data 생성하기
+    String companiesJwt = loginCompany();
+    CompletionOrder completionOrder = companyOrderService.completeServiceOrder(companiesJwt,
+        CompleteOrderForm.builder().serviceOrderId(serviceOrder.getId()).build());
+
+    //then
+    customerOrderService.orderCompletionVerify(completionOrder.getVerificationCode(), completionOrder.getId());
+    CompletionOrder foundCompletionOrder = completionOrderRepository.findById(completionOrder.getId())
+            .orElseThrow(() -> new OrderException(OrderErrorCode.NOT_MATCHED_ORDER_INFO));
+
+    assertEquals(completionOrder.getId(), foundCompletionOrder.getId());
+    assertEquals(true, foundCompletionOrder.isCustomerCheckYn());
+    assertEquals(true, foundCompletionOrder.isCompanyCheckYn());
+  }
 
   @Test
   void CREATE_ORDER_DATA_SUCCESS_TEST() {
@@ -154,7 +189,7 @@ class CustomerOrderServiceTest {
 
   private ServiceProduct addServiceProduct() {
 
-    String companysJwt = makeCompanysJwt();
+    String companiesJwt = makeCompanysJwt();
     CustomerRequest customerRequest = makeCustomerRequest();
 
     List<AddProductOptionForm> addProductOptionForms = makeProductOptionForms();
@@ -166,7 +201,7 @@ class CustomerOrderServiceTest {
         .productPrice(150000)
         .serviceRequestId(customerRequest.getId())
         .build();
-    return companyProductService.addServiceProduct(companysJwt, addServiceProductForm);
+    return companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
   }
 
 
@@ -264,5 +299,14 @@ class CustomerOrderServiceTest {
     return customerSignInApplication.generateToken(signInForm);
   }
 
+  private String loginCompany() {
+
+    CompanySignInForm signInForm = CompanySignInForm
+        .builder()
+        .email("company@google.com")
+        .password("1111")
+        .build();
+    return companySignInApplication.generateToken(signInForm);
+  }
 
 }

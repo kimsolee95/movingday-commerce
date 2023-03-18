@@ -31,7 +31,7 @@ public class CompanyOrderController {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     companyOrderService.completeServiceOrder(refinedToken, form);
-    return ResponseEntity.ok("확인");
+    return ResponseEntity.ok("업체회원님의 주문완료 확인을 완료하였습니다. 상품 주문 고객님의 문자 알림 확인 시, 주문완료 확인이 정상적으로 처리됩니다.");
   }
 
   @GetMapping
