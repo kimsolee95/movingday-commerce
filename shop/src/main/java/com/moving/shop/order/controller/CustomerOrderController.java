@@ -36,7 +36,7 @@ public class CustomerOrderController {
   @GetMapping("/completion/verify")
   @PreAuthorize("hasAuthority('CUSTOMER')")
   public ResponseEntity<?> customerVerifyOrderCompletion(String code, Long completionOrderId) {
-    
+
     orderApplication.customerOrderCompletionVerify(code, completionOrderId);
     return ResponseEntity.ok("고객님의 주문 완료를 확인하였습니다.");
   }

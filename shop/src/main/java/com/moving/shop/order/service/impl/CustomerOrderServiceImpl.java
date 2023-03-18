@@ -34,6 +34,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
   private final CustomerRequestRepository customerRequestRepository;
   private final ProductOptionRepository productOptionRepository;
 
+  @Transactional
   @Override
   public ServiceOrder createOrder(AddOrderProductForm form) {
 
@@ -59,7 +60,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     ServiceOrder serviceOrder = serviceOrderRepository.save(ServiceOrder.createServiceOrder(customerRequest));
 
     // 2-6. save orderProduct
-    ServiceProduct.buyServiceProduct(serviceProduct);
+    serviceProduct.buyServiceProduct(serviceProduct); //set 사용하지 않는 방식으로 수정
     OrderProduct orderProduct = orderProductRepository.save(
         OrderProduct.of(serviceOrder, serviceProduct, form, wishOptions));
 
