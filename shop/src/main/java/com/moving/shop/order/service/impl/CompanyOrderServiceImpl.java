@@ -84,12 +84,7 @@ public class CompanyOrderServiceImpl implements CompanyOrderService {
     try {
       smsService.sendSms(
           SmsMessageForm.builder()
-          .content(
-              "[서비스 완료]\n 주문하신 서비스가 완료되었음을 아래 링크를 클릭하여 확인해주세요\n" +
-              "주문완료 확인 링크>> http:http://localhost:8081/api/customer/order/completion/verify" +
-              "?" + "code=" + completionOrder.getVerificationCode() +
-              "&id=" + completionOrder.getId()
-          )
+          .content(makeOrderCompletionContent(completionOrder.getVerificationCode(), completionOrder.getId()))
           .to(customerInfo.getPhone()) //customer`s phone
           .build());
     } catch (JsonProcessingException e) {
@@ -106,4 +101,17 @@ public class CompanyOrderServiceImpl implements CompanyOrderService {
 
     return completionOrder;
   }
+
+  private String makeOrderCompletionContent(String verificationCode, Long completionOrderId) {
+
+    StringBuilder builder = new StringBuilder();
+    return builder
+        .append("[서비스 완료]\n 주문하신 서비스가 완료되었음을 아래 링크를 클릭하여 확인해주세요\n")
+        .append("주문완료 확인 링크 >> http:http://localhost:8081/api/customer/order/completion/verify")
+        .append("?code=")
+        .append(verificationCode)
+        .append("&id=")
+        .append(completionOrderId).toString();
+  }
+
 }
