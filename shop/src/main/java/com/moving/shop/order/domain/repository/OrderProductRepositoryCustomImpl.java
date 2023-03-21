@@ -30,7 +30,6 @@ public class OrderProductRepositoryCustomImpl implements OrderProductRepositoryC
         .from(orderProduct)
         .join(orderProduct.serviceProduct, serviceProduct)
         .on(orderProduct.serviceProduct.company.id.eq(companyId)) //where
-        //.fetchJoin()
         .join(orderProduct.serviceOrder, serviceOrder)
         .on(serviceOrder.orderStatus.eq(OrderStatus.valueOf("SUBMIT"))) //where
         .fetch();

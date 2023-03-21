@@ -28,20 +28,4 @@ public class ServiceProductRepositoryCustomImpl implements ServiceProductReposit
         .fetch();
   }
 
-  //fetch join으로 해결할 것이 아니라 return 용 dto를 만들어서 하는 법으로 수정 필요.
-//  @Override
-//  public List<ServiceProduct> findWithProductOptionsById(Long serviceProductId) {
-//
-//    QServiceProduct serviceProduct = QServiceProduct.serviceProduct;
-//    QProductOption productOption = QProductOption.productOption;
-//    QCompany company = QCompany.company;
-//    QCustomerRequest customerRequest = QCustomerRequest.customerRequest;
-//
-//    return jpaQueryFactory.selectFrom(serviceProduct)
-//        .join(serviceProduct.productOptions, productOption).fetchJoin()
-//        .join(serviceProduct.company, company).fetchJoin()
-//        .join(serviceProduct.customerRequest, customerRequest).fetchJoin()
-//        .where(serviceProduct.id.eq(serviceProductId))
-//        .fetch();
-//  }
 }
