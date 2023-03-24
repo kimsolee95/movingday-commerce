@@ -5,6 +5,7 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREF
 
 import com.moving.shop.product.domain.dto.ProposedProductResponse;
 import com.moving.shop.product.service.CustomerProductService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ public class CustomerProductController {
 
   @GetMapping
   @PreAuthorize("hasAuthority('CUSTOMER')")
+  @ApiOperation(value="고객 회원의 제안받은 서비스 상품 확인 API", notes = "로그인한 고객 회원이 작성한 견적 요청서에 대해 업체 측으로부터 받은 서비스 상품들을 확인 시 사용합니다.")
   public ResponseEntity<?> showReceivedServiceProduct(@RequestHeader(value = TOKEN_HEADER) String token) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
@@ -31,6 +33,7 @@ public class CustomerProductController {
 
   @GetMapping("/{id}")
   @PreAuthorize("hasAuthority('CUSTOMER')")
+  @ApiOperation(value="고객 회원의 제안받은 서비스 상품 확인 API", notes = "로그인한 고객 회원이 작성한 견적 요청서에 대한 업체측으로부터 받은 서비스 상품 상세 정보를 확인 시 사용합니다. (상품에 대한 상품옵션 같이 조회)")
   public ResponseEntity<?> getCustomersReceivedProduct(@PathVariable("id")Long serviceProductId) {
     return ResponseEntity.ok(customerProductService.findWithProductOptionsById(serviceProductId));
   }

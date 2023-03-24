@@ -6,6 +6,7 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREF
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
 import com.moving.shop.product.domain.dto.ServiceProductResponse;
 import com.moving.shop.product.service.CompanyProductService;
+import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class CompanyProductController {
 
   @PostMapping
   @PreAuthorize("hasAuthority('COMPANY')")
+  @ApiOperation(value="업체 회원의 서비스 상품 추가 API", notes = "로그인한 업체 회원이 고객의 요청서에 대한 서비스 상품을 작성할 때 사용합니다.")
   public ResponseEntity<ServiceProductResponse> addServiceProduct(@RequestHeader(value = TOKEN_HEADER) String token,
       @Valid @RequestBody AddServiceProductForm form) {
 
