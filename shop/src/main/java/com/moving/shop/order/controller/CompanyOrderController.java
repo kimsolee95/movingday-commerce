@@ -6,6 +6,7 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREF
 import com.moving.shop.order.domain.dto.CompleteOrderForm;
 import com.moving.shop.order.domain.dto.SubmittedOrders;
 import com.moving.shop.order.service.CompanyOrderService;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class CompanyOrderController {
 
   @PostMapping("/completion")
   @PreAuthorize("hasAuthority('COMPANY')")
+  @ApiOperation(value="업체 회원의 서비스 완료 API", notes = "로그인한 업체 회원이 주문된 서비스 시행 후, 완료 처리를 할 때 사용합니다.")
   public ResponseEntity<?> completeOrder(@RequestHeader(value = TOKEN_HEADER) String token,
       @RequestBody CompleteOrderForm form) {
 
@@ -36,6 +38,7 @@ public class CompanyOrderController {
 
   @GetMapping
   @PreAuthorize("hasAuthority('COMPANY')")
+  @ApiOperation(value="업체 회원의 주문접수된 상품내역 확인 API", notes = "로그인한 업체 회원이 주문접수 상태에 있는 서비스 상품을 확인합니다.")
   public ResponseEntity<List<SubmittedOrders>> showSubmittedOrders(@RequestHeader(value = TOKEN_HEADER) String token) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
