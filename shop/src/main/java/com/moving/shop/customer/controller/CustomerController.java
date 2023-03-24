@@ -9,6 +9,7 @@ import com.moving.shop.customer.domain.dto.CustomerRequestForm;
 import com.moving.shop.customer.domain.entity.CashBalanceHistory;
 import com.moving.shop.customer.service.CustomerCashService;
 import com.moving.shop.customer.service.CustomerRequestService;
+import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -31,6 +32,7 @@ public class CustomerController {
 
   @PostMapping("/cash")
   @PreAuthorize("hasAuthority('CUSTOMER')")
+  @ApiOperation(value="고객 캐쉬 변경 API", notes = "로그인한 고객이 자신의 캐쉬 잔액을 변경합니다.")
   public ResponseEntity<ChangeCashForm> changeCash(
       @RequestHeader(value = TOKEN_HEADER) String token, @Valid @RequestBody ChangeCashForm form) {
 
@@ -40,6 +42,7 @@ public class CustomerController {
 
   @PostMapping("/requests")
   @PreAuthorize("hasAuthority('CUSTOMER')")
+  @ApiOperation(value="고객 서비스요청서 작성 API", notes = "로그인한 고객이 서비스 요청서를 작성합니다..")
   public ResponseEntity<CustomerRequestForm> addCustomerRequest(@RequestHeader(value = TOKEN_HEADER) String token,
       @Valid @RequestBody CustomerRequestForm form) {
 
@@ -49,6 +52,7 @@ public class CustomerController {
 
   @GetMapping
   @PreAuthorize("hasAuthority('CUSTOMER')")
+  @ApiOperation(value="고객 내 정보 확인 API", notes = "로그인한 고객이 자신의 정보를 확인합니다.")
   public ResponseEntity<CustomerInfo> getCustomerInfo(@RequestHeader(value = TOKEN_HEADER) String token) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());

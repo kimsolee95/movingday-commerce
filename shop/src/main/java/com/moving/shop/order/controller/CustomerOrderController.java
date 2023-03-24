@@ -5,6 +5,7 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREF
 
 import com.moving.shop.order.application.OrderApplication;
 import com.moving.shop.order.domain.dto.AddOrderProductForm;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,7 @@ public class CustomerOrderController {
 
   @PostMapping
   @PreAuthorize("hasAuthority('CUSTOMER')")
+  @ApiOperation(value="고객 회원의 서비스 상품 주문 API", notes = "로그인한 고객 회원이 업체 측에서 제시한 상품을 주문 시에 사용합니다.")
   public ResponseEntity<?> takeOrder(@RequestHeader(value = TOKEN_HEADER) String token,
       @RequestBody AddOrderProductForm form) {
 
@@ -35,6 +37,7 @@ public class CustomerOrderController {
 
   @GetMapping("/completion/verify")
   @PreAuthorize("hasAuthority('CUSTOMER')")
+  @ApiOperation(value="고객 회원의 서비스 상품 시행 완료 API", notes = "로그인한 고객 회원이 주문된 서비스를 받은 후, 업체 측으로부터의 요청을 받아 완료 처리를 할 때 사용합니다.")
   public ResponseEntity<?> customerVerifyOrderCompletion(String code, Long completionOrderId) {
 
     orderApplication.customerOrderCompletionVerify(code, completionOrderId);
