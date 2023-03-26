@@ -2,6 +2,8 @@ package com.moving.shop.product.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.moving.shop.common.exception.customexception.CompanyException;
+import com.moving.shop.common.exception.type.CompanyErrorCode;
 import com.moving.shop.common.security.TokenProvider;
 import com.moving.shop.company.application.CompanySignInApplication;
 import com.moving.shop.company.application.CompanySignUpApplication;
@@ -18,12 +20,16 @@ import com.moving.shop.customer.domain.type.ServiceCategory;
 import com.moving.shop.customer.service.CustomerRequestService;
 import com.moving.shop.product.domain.dto.AddProductOptionForm;
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
+import com.moving.shop.product.domain.dto.UpdateProductOptionForm;
+import com.moving.shop.product.domain.dto.UpdateServiceProductForm;
 import com.moving.shop.product.domain.entity.ProductOption;
 import com.moving.shop.product.domain.entity.ServiceProduct;
+import com.moving.shop.product.domain.repository.ServiceProductRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.sql.Update;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 class CompanyProductServiceTest {
+
+  @Autowired
+  private ServiceProductRepository serviceProductRepository;
 
   @Autowired
   private CompanyProductService companyProductService;
@@ -58,10 +67,62 @@ class CompanyProductServiceTest {
   private TokenProvider tokenProvider;
 
   @Test
+  void UPDATE_SERVICE_PRODUCT_TEST() {
+
+    //given
+    String companiesJwt = makeCompanysJwt();
+    String customersJwt = makeCustomersJwt();
+
+    // (request create)
+    CustomerRequestForm customerRequestForm = CustomerRequestForm.builder()
+        .serviceAddress("경기 가평")
+        .desiredDate(LocalDate.now().plusMonths(3))
+        .detailRequest("test 요구사항입니다.")
+        .placeArea(23)
+        .serviceCategory("cleaning")
+        .placeShape("house")
+        .build();
+    customerRequestService.addCustomerRequest(customersJwt, customerRequestForm);
+
+    // (target serviceProduct create)
+    List<AddProductOptionForm> addProductOptionForms = makeProductOptionForms();
+    AddServiceProductForm addServiceProductForm = AddServiceProductForm.builder()
+        .executeDate(LocalDateTime.now().plusMonths(3))
+        .name("테스트상품")
+        .productOptions(addProductOptionForms)
+        .outlineDescription("테스트용으로 등록하는 상품입니다.")
+        .productPrice(150000)
+        .serviceRequestId(1L)
+        .build();
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
+
+    //when
+    List<UpdateProductOptionForm> updateProductOptionForms = makeUpdateProductOptionForms(serviceProduct);
+    UpdateServiceProductForm updateServiceProductForm = UpdateServiceProductForm.builder()
+        .serviceProductId(serviceProduct.getId())
+        .productOptions(updateProductOptionForms)
+        .name("수정test용상품이름")
+        .outLineDescription("수정test용description")
+        .productPrice(500)
+        .executeDate(LocalDateTime.now().plusMonths(7))
+        .serviceRequestId(serviceProduct.getCustomerRequest().getId())
+        .build();
+    ServiceProduct updatedServiceProduct = companyProductService.updateServiceProduct(companiesJwt, updateServiceProductForm);
+    ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(
+        updatedServiceProduct.getId())
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
+
+    //then
+    assertEquals(500, updatedServiceProduct.getProductPrice());
+    assertEquals("수정test용상품이름", foundServiceProduct.getName());
+    assertEquals("수정TEST를위한옵션명입니다", foundServiceProduct.getProductOptions().get(0).getName());
+  }
+
+  @Test
   void ADD_SERVICE_PRODUCT_TEST() {
 
     //given
-    String companysJwt = makeCompanysJwt();
+    String companiesJwt = makeCompanysJwt();
     String customersJwt = makeCustomersJwt();
 
     // (request create)
@@ -86,7 +147,7 @@ class CompanyProductServiceTest {
         .productPrice(150000)
         .serviceRequestId(1L)
         .build();
-    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companysJwt, addServiceProductForm);
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
 
     //then
     assertNotNull(serviceProduct);
@@ -130,6 +191,23 @@ class CompanyProductServiceTest {
 
     //then
     assertNotNull(result);
+  }
+
+  private List<UpdateProductOptionForm> makeUpdateProductOptionForms(ServiceProduct serviceProduct) {
+
+    List<UpdateProductOptionForm> updateProductOptionForms = new ArrayList<>();
+
+    for (ProductOption option : serviceProduct.getProductOptions()) {
+
+      UpdateProductOptionForm updateProductOptionForm = UpdateProductOptionForm.builder()
+          .serviceProductId(serviceProduct.getId())
+          .productOptionId(option.getId())
+          .name("수정TEST를위한옵션명입니다")
+          .optionPrice(50)
+          .build();
+      updateProductOptionForms.add(updateProductOptionForm);
+    }
+    return updateProductOptionForms;
   }
 
   private List<AddProductOptionForm> makeProductOptionForms() {
