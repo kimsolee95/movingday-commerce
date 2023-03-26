@@ -8,6 +8,9 @@ import com.moving.shop.company.domain.repository.CompanyRepository;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.customer.domain.repository.CustomerRequestRepository;
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
+import com.moving.shop.product.domain.dto.UpdateProductOptionForm;
+import com.moving.shop.product.domain.dto.UpdateServiceProductForm;
+import com.moving.shop.product.domain.entity.ProductOption;
 import com.moving.shop.product.domain.entity.ServiceProduct;
 import com.moving.shop.product.domain.repository.ServiceProductRepository;
 import com.moving.shop.product.service.CompanyProductService;
@@ -16,6 +19,7 @@ import com.moving.shop.servicechat.domain.redis.RedisChatRoomRepository;
 import com.moving.shop.servicechat.domain.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ public class CompanyProductServiceImpl implements CompanyProductService {
   private final ChatRoomRepository chatRoomRepository;
   private final RedisChatRoomRepository redisChatRoomRepository;
 
+  @Transactional
   @Override
   public ServiceProduct addServiceProduct(String refinedToken, AddServiceProductForm form) {
 
@@ -49,5 +54,37 @@ public class CompanyProductServiceImpl implements CompanyProductService {
 
     //상품 save
     return serviceProduct;
+  }
+
+  @Transactional
+  @Override
+  public ServiceProduct updateServiceProduct(String refinedToken, UpdateServiceProductForm form) {
+
+    //data check
+    String email = tokenProvider.getUsername(refinedToken);
+    Company company = companyRepository.findByEmail(email)
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.NOT_EXIST_COMPANY_MEMBER));
+
+    CustomerRequest customerRequest = customerRequestRepository.findById(form.getServiceRequestId())
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_REQUEST_NOT_EXIST));
+
+    ServiceProduct serviceProduct = serviceProductRepository.findWithProductOptionsById(form.getServiceProductId())
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
+
+    if (serviceProduct.isPurchaseYn()) {
+      throw new CompanyException(CompanyErrorCode.ALREADY_ORDERED_PRODUCT);
+    }
+
+    //상품 옵션 정보 update
+    for (UpdateProductOptionForm optionForm : form.getProductOptions()) {
+
+      ProductOption productOption = serviceProduct.getProductOptions().stream()
+          .filter(option -> option.getId().equals(optionForm.getProductOptionId()))
+          .findFirst().orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
+      productOption.updateProductOption(optionForm);
+    }
+
+    //상품 정보 update
+    return serviceProduct.updateServiceProduct(form);
   }
 }

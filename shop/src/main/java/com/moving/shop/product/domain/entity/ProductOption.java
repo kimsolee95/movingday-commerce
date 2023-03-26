@@ -3,6 +3,7 @@ package com.moving.shop.product.domain.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.moving.shop.common.BaseEntity;
 import com.moving.shop.product.domain.dto.AddProductOptionForm;
+import com.moving.shop.product.domain.dto.UpdateProductOptionForm;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -50,6 +51,14 @@ public class ProductOption extends BaseEntity {
         .optionPrice(form.getOptionPrice())
         .purchaseYn(false)
         .build();
+  }
+
+  public ProductOption updateProductOption (UpdateProductOptionForm form) {
+    
+    this.name = form.getName();
+    this.optionPrice = form.getOptionPrice();
+    this.purchaseYn = false;
+    return this;
   }
 
   public static void buyOption(ProductOption productOption) {

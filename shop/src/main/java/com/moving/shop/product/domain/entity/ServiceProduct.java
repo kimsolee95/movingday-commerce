@@ -6,6 +6,8 @@ import com.moving.shop.common.BaseEntity;
 import com.moving.shop.company.domain.entity.Company;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
+import com.moving.shop.product.domain.dto.UpdateProductOptionForm;
+import com.moving.shop.product.domain.dto.UpdateServiceProductForm;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,6 @@ public class ServiceProduct extends BaseEntity {
   private LocalDateTime executeDate;
 
   /* 고객 서비스 요청서 */
-//  private Long serviceRequestId;
   @ManyToOne
   @JoinColumn(name = "customer_request_id")
   private CustomerRequest customerRequest;
@@ -82,10 +83,19 @@ public class ServiceProduct extends BaseEntity {
         .outlineDescription(form.getOutlineDescription())
         .productPrice(form.getProductPrice())
         .executeDate(form.getExecuteDate())
-//        .serviceRequestId(form.getServiceRequestId())
         .customerRequest(customerRequest)
         .purchaseYn(false)
         .build();
+  }
+
+  public ServiceProduct updateServiceProduct(UpdateServiceProductForm form) {
+
+    this.name = form.getName();
+    this.outlineDescription = form.getOutLineDescription();
+    this.productPrice = form.getProductPrice();
+    this.executeDate = form.getExecuteDate();
+    this.purchaseYn = false;
+    return this;
   }
 
   public void buyServiceProduct(ServiceProduct serviceProduct) {
