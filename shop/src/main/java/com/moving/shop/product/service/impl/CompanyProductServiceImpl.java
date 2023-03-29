@@ -105,6 +105,7 @@ public class CompanyProductServiceImpl implements CompanyProductService {
     chatRoomRepository.deleteById(chatRoom.getId());
 
     //redis chat room delete
+    redisChatRoomRepository.deleteChatRoom(chatRoom.getId());
 
     //product and option delete
     serviceProductRepository.deleteById(serviceProductId);
