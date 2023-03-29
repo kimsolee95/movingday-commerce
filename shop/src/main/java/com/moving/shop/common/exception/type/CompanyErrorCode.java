@@ -14,6 +14,7 @@ public enum CompanyErrorCode {
   ALREADY_ORDERED_PRODUCT(HttpStatus.BAD_REQUEST, "상품 변경은 고객 회원님의 주문이 진행된 상태 이전에만 가능한 서비스입니다."),
   SERVICE_PRODUCT_NOT_EXIST(HttpStatus.BAD_REQUEST, "변경하려는 상품에 대한 정보가 존재하지 않습니다. 새로운 상품을 등록해주세요."),
   PRODUCT_OPTION_NOT_EXIST(HttpStatus.BAD_REQUEST, "변경하려는 상품 옵션에 대한 정보가 존재하지 않습니다. 새로운 상품을 등록해주세요."),
+  CHAT_ROOM_INFO_NOT_EXIST(HttpStatus.BAD_REQUEST, "찾으려는 상품에 대한 상담방 정보가 존재하지 않습니다. 확인 혹은 고객센터에 문의해주세요."),
   EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "해당 이메일을 가진 회원이 이미 존재합니다. 다른 이메일을 사용해주세요.");
 
   private final HttpStatus httpStatus;

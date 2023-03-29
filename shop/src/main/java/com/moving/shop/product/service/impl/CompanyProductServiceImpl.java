@@ -87,4 +87,26 @@ public class CompanyProductServiceImpl implements CompanyProductService {
     //상품 정보 update
     return serviceProduct.updateServiceProduct(form);
   }
+
+  @Transactional
+  @Override
+  public void deleteServiceProduct(String refinedToken, Long serviceProductId) {
+
+    //data check
+    String email = tokenProvider.getUsername(refinedToken);
+    if (!companyRepository.existsByEmail(email)) {
+      throw new CompanyException(CompanyErrorCode.NOT_EXIST_COMPANY_MEMBER);
+    }
+
+    ChatRoom chatRoom = chatRoomRepository.findByServiceProduct_Id(serviceProductId)
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.CHAT_ROOM_INFO_NOT_EXIST));
+
+    //chat room delete
+    chatRoomRepository.deleteById(chatRoom.getId());
+
+    //redis chat room delete
+
+    //product and option delete
+    serviceProductRepository.deleteById(serviceProductId);
+  }
 }

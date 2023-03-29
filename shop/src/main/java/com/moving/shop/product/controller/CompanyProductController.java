@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +48,17 @@ public class CompanyProductController {
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(
         ServiceProductResponse.from(companyProductService.updateServiceProduct(refinedToken, form)));
+  }
+
+  @DeleteMapping("/{serviceProductId}")
+  @PreAuthorize("hasAuthority('COMPANY')")
+  @ApiOperation(value="업체 회원의 서비스 상품 삭제 API", notes = "로그인한 업체 회원이 고객의 요청서에 대한 서비스 상품(주문이 들어가기 전의 경우)을 삭제할 때 사용합니다.")
+  public ResponseEntity<?> deleteServiceProduct(@RequestHeader(value = TOKEN_HEADER) String token,
+      @PathVariable("serviceProductId") Long serviceProductId) {
+
+    String refinedToken = token.substring(TOKEN_PREFIX.length());
+    companyProductService.deleteServiceProduct(refinedToken, serviceProductId);
+    return ResponseEntity.ok("");
   }
 
 }
