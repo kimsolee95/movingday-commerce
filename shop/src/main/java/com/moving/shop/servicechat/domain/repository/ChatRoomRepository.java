@@ -15,4 +15,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
   List<ChatRoom> findAllByCompanyId(Long companyId);
 
   Optional<ChatRoom> findByServiceProduct_Id(@RequestParam("service_product_id") Long serviceProductId);
+
+  boolean existsById(Long id);
 }

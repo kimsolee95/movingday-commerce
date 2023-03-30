@@ -24,7 +24,10 @@ import com.moving.shop.product.domain.dto.UpdateProductOptionForm;
 import com.moving.shop.product.domain.dto.UpdateServiceProductForm;
 import com.moving.shop.product.domain.entity.ProductOption;
 import com.moving.shop.product.domain.entity.ServiceProduct;
+import com.moving.shop.product.domain.repository.ProductOptionRepository;
 import com.moving.shop.product.domain.repository.ServiceProductRepository;
+import com.moving.shop.servicechat.domain.entity.ChatRoom;
+import com.moving.shop.servicechat.domain.repository.ChatRoomRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +44,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 class CompanyProductServiceTest {
+
+  @Autowired
+  private ChatRoomRepository chatRoomRepository;
+
+  @Autowired
+  private ProductOptionRepository productOptionRepository;
 
   @Autowired
   private ServiceProductRepository serviceProductRepository;
@@ -65,6 +74,54 @@ class CompanyProductServiceTest {
 
   @Autowired
   private TokenProvider tokenProvider;
+
+  @Test
+  void DELETE_SERVICE_PRODUCT_TEST() {
+
+    //given
+    String companiesJwt = makeCompanysJwt();
+    String customersJwt = makeCustomersJwt();
+
+    // (request create)
+    CustomerRequestForm customerRequestForm = CustomerRequestForm.builder()
+        .serviceAddress("경기 가평")
+        .desiredDate(LocalDate.now().plusMonths(3))
+        .detailRequest("test 요구사항입니다.")
+        .placeArea(23)
+        .serviceCategory("cleaning")
+        .placeShape("house")
+        .build();
+    customerRequestService.addCustomerRequest(customersJwt, customerRequestForm);
+
+    // (target serviceProduct create)
+    List<AddProductOptionForm> addProductOptionForms = makeProductOptionForms();
+    AddServiceProductForm addServiceProductForm = AddServiceProductForm.builder()
+        .executeDate(LocalDateTime.now().plusMonths(3))
+        .name("삭제기능테스트상품")
+        .productOptions(addProductOptionForms)
+        .outlineDescription("삭제기능테스트용으로 등록하는 상품입니다.")
+        .productPrice(150000)
+        .serviceRequestId(1L)
+        .build();
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
+    ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(serviceProduct.getId())
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
+    ChatRoom chatRoom = chatRoomRepository.findByServiceProduct_Id(serviceProduct.getId())
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.CHAT_ROOM_INFO_NOT_EXIST));
+
+    //when
+    companyProductService.deleteServiceProduct(companiesJwt, foundServiceProduct.getId());
+    boolean isServiceProductExists = serviceProductRepository.existsById(foundServiceProduct.getId());
+    boolean isProductOption1Exists = productOptionRepository.existsById(foundServiceProduct.getProductOptions().get(0).getId());
+    boolean isProductOption2Exists = productOptionRepository.existsById(foundServiceProduct.getProductOptions().get(1).getId());
+    boolean isChatRoomExists = chatRoomRepository.existsById(chatRoom.getId());
+
+    //then
+    assertEquals(false, isServiceProductExists);
+    assertEquals(false, isProductOption1Exists);
+    assertEquals(false, isProductOption2Exists);
+    assertEquals(false, isChatRoomExists);
+  }
 
   @Test
   void UPDATE_SERVICE_PRODUCT_TEST() {
