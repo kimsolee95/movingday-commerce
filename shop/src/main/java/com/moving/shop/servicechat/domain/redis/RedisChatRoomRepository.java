@@ -67,4 +67,8 @@ public class RedisChatRoomRepository {
     return topicMap.get(roomId);
   }
 
+  public void deleteChatRoom(Long key) {
+    redisTemplate.delete(key.toString());
+  }
+
 }

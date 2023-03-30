@@ -9,4 +9,6 @@ public interface CompanyProductService {
   ServiceProduct addServiceProduct(String refinedToken, AddServiceProductForm form);
 
   ServiceProduct updateServiceProduct(String refinedToken, UpdateServiceProductForm form);
+
+  void deleteServiceProduct(String refinedToken, Long serviceProductId);
 }

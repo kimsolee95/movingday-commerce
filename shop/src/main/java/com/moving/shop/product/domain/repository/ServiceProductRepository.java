@@ -10,4 +10,6 @@ public interface ServiceProductRepository extends JpaRepository<ServiceProduct, 
 
   @EntityGraph(attributePaths = {"productOptions"}, type = EntityGraphType.LOAD)
   Optional<ServiceProduct> findWithProductOptionsById(Long id);
+
+  boolean existsById(Long id);
 }
