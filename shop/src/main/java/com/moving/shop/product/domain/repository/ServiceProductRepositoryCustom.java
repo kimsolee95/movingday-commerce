@@ -8,5 +8,5 @@ public interface ServiceProductRepositoryCustom {
 
   List<ServiceProduct> findByCustomerId(Long customerId);
 
-  List<CompaniesServiceProduct> findAllByCompanyId(Long companyId);
+  List<CompaniesServiceProduct> findAllByCompanyIdAndPurchaseYnFalse(Long companyId);
 }

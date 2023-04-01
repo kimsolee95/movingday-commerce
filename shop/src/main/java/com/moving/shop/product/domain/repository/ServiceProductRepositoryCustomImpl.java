@@ -33,7 +33,7 @@ public class ServiceProductRepositoryCustomImpl implements ServiceProductReposit
   }
 
   @Override
-  public List<CompaniesServiceProduct> findAllByCompanyId(Long companyId) {
+  public List<CompaniesServiceProduct> findAllByCompanyIdAndPurchaseYnFalse(Long companyId) {
 
     QServiceProduct serviceProduct = QServiceProduct.serviceProduct;
     QOrderProduct orderProduct = QOrderProduct.orderProduct;
