@@ -20,6 +20,7 @@ import com.moving.shop.customer.domain.type.ServiceCategory;
 import com.moving.shop.customer.service.CustomerRequestService;
 import com.moving.shop.product.domain.dto.AddProductOptionForm;
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
+import com.moving.shop.product.domain.dto.CompaniesServiceProduct;
 import com.moving.shop.product.domain.dto.UpdateProductOptionForm;
 import com.moving.shop.product.domain.dto.UpdateServiceProductForm;
 import com.moving.shop.product.domain.entity.ProductOption;
@@ -74,6 +75,50 @@ class CompanyProductServiceTest {
 
   @Autowired
   private TokenProvider tokenProvider;
+
+  @Test
+  void SELECT_NOT_PURCHASED_PRODUCT_TEST() {
+
+    //given
+    String companiesJwt = makeCompanysJwt();
+    String customersJwt = makeCustomersJwt();
+
+    // (request create)
+    CustomerRequestForm customerRequestForm = CustomerRequestForm.builder()
+        .serviceAddress("경기 가평")
+        .desiredDate(LocalDate.now().plusMonths(3))
+        .detailRequest("test 요구사항입니다.")
+        .placeArea(23)
+        .serviceCategory("cleaning")
+        .placeShape("house")
+        .build();
+    customerRequestService.addCustomerRequest(customersJwt, customerRequestForm);
+
+    // (service product create)
+    List<AddProductOptionForm> addProductOptionForms = makeProductOptionForms();
+    AddServiceProductForm addServiceProductForm = AddServiceProductForm.builder()
+        .executeDate(LocalDateTime.now().plusMonths(3))
+        .name("상품명")
+        .productOptions(addProductOptionForms)
+        .outlineDescription("테스트용으로 등록하는 상품입니다.")
+        .productPrice(150000)
+        .serviceRequestId(1L)
+        .build();
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
+    ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(serviceProduct.getId())
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
+    ChatRoom chatRoom = chatRoomRepository.findByServiceProduct_Id(serviceProduct.getId())
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.CHAT_ROOM_INFO_NOT_EXIST));
+
+    //when
+    List<CompaniesServiceProduct> notPurchasedProducts = companyProductService.selectNotPurchasedProduct(companiesJwt);
+
+    //then
+    assertEquals(false, notPurchasedProducts.get(0).isPurchaseYn());
+    assertEquals("상품명", notPurchasedProducts.get(0).getName());
+    assertEquals(150000, notPurchasedProducts.get(0).getProductPrice());
+    assertEquals("테스트용으로 등록하는 상품입니다.", notPurchasedProducts.get(0).getOutlineDescription());
+  }
 
   @Test
   void DELETE_SERVICE_PRODUCT_TEST() {

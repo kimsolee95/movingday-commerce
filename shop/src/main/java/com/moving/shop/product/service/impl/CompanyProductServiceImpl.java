@@ -8,6 +8,7 @@ import com.moving.shop.company.domain.repository.CompanyRepository;
 import com.moving.shop.customer.domain.entity.CustomerRequest;
 import com.moving.shop.customer.domain.repository.CustomerRequestRepository;
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
+import com.moving.shop.product.domain.dto.CompaniesServiceProduct;
 import com.moving.shop.product.domain.dto.UpdateProductOptionForm;
 import com.moving.shop.product.domain.dto.UpdateServiceProductForm;
 import com.moving.shop.product.domain.entity.ProductOption;
@@ -17,6 +18,7 @@ import com.moving.shop.product.service.CompanyProductService;
 import com.moving.shop.servicechat.domain.entity.ChatRoom;
 import com.moving.shop.servicechat.domain.redis.RedisChatRoomRepository;
 import com.moving.shop.servicechat.domain.repository.ChatRoomRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,5 +111,15 @@ public class CompanyProductServiceImpl implements CompanyProductService {
 
     //product and option delete
     serviceProductRepository.deleteById(serviceProductId);
+  }
+
+  @Override
+  public List<CompaniesServiceProduct> selectNotPurchasedProduct(String refinedToken) {
+
+    String email = tokenProvider.getUsername(refinedToken);
+    Company company = companyRepository.findByEmail(email)
+            .orElseThrow(() -> new CompanyException(CompanyErrorCode.NOT_EXIST_COMPANY_MEMBER));
+
+    return serviceProductRepository.findAllByCompanyIdAndPurchaseYnFalse(company.getId());
   }
 }

@@ -4,15 +4,18 @@ import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_HEAD
 import static com.moving.shop.common.security.JwtAuthenticationFilter.TOKEN_PREFIX;
 
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
+import com.moving.shop.product.domain.dto.CompaniesServiceProduct;
 import com.moving.shop.product.domain.dto.ServiceProductResponse;
 import com.moving.shop.product.domain.dto.UpdateServiceProductForm;
 import com.moving.shop.product.service.CompanyProductService;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,6 +30,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompanyProductController {
 
   private final CompanyProductService companyProductService;
+
+  @GetMapping
+  @PreAuthorize("hasAuthority('COMPANY')")
+  @ApiOperation(value="업체 회원의 수정 가능한 서비스 상품 조회 API", notes = "로그인한 업체 회원이 아직 주문 처리되지 않은 상품 목록을 조회할 때 사용합니다.")
+  public ResponseEntity<List<CompaniesServiceProduct>> getCompaniesServiceProductPurchasedYnFalse(
+      @RequestHeader(value = TOKEN_HEADER) String token) {
+
+    String refinedToken = token.substring(TOKEN_PREFIX.length());
+    return ResponseEntity.ok(companyProductService.selectNotPurchasedProduct(refinedToken));
+  }
 
   @PostMapping
   @PreAuthorize("hasAuthority('COMPANY')")
