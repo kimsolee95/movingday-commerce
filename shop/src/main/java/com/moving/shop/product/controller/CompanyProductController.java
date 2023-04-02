@@ -31,14 +31,24 @@ public class CompanyProductController {
 
   private final CompanyProductService companyProductService;
 
-  @GetMapping
+  @GetMapping("/not-purchased-item")
   @PreAuthorize("hasAuthority('COMPANY')")
-  @ApiOperation(value="업체 회원의 수정 가능한 서비스 상품 조회 API", notes = "로그인한 업체 회원이 아직 주문 처리되지 않은 상품 목록을 조회할 때 사용합니다.")
+  @ApiOperation(value="업체 회원의 수정 가능한 서비스 상품 조회 API", notes = "로그인한 업체 회원이 주문이 된(고객이 구매한) 상품 목록을 조회할 때 사용합니다.")
   public ResponseEntity<List<CompaniesServiceProduct>> getCompaniesServiceProductPurchasedYnFalse(
       @RequestHeader(value = TOKEN_HEADER) String token) {
 
     String refinedToken = token.substring(TOKEN_PREFIX.length());
     return ResponseEntity.ok(companyProductService.selectNotPurchasedProduct(refinedToken));
+  }
+
+  @GetMapping("/purchased-item")
+  @PreAuthorize("hasAuthority('COMPANY')")
+  @ApiOperation(value="업체 회원의 수정 가능한 서비스 상품 조회 API", notes = "로그인한 업체 회원이 아직 주문 처리되지 않은 상품 목록을 조회할 때 사용합니다.")
+  public ResponseEntity<List<CompaniesServiceProduct>> getCompaniesServiceProductPurchasedYnTrue(
+      @RequestHeader(value = TOKEN_HEADER) String token) {
+
+    String refinedToken = token.substring(TOKEN_PREFIX.length());
+    return ResponseEntity.ok(companyProductService.selectPurchasedProduct(refinedToken));
   }
 
   @PostMapping

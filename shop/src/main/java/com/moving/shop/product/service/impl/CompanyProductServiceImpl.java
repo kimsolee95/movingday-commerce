@@ -38,10 +38,7 @@ public class CompanyProductServiceImpl implements CompanyProductService {
   @Override
   public ServiceProduct addServiceProduct(String refinedToken, AddServiceProductForm form) {
 
-    String email = tokenProvider.getUsername(refinedToken);
-    Company company = companyRepository.findByEmail(email)
-        .orElseThrow(() -> new CompanyException(CompanyErrorCode.NOT_EXIST_COMPANY_MEMBER));
-
+    Company company = getCompany(refinedToken);
     //erd 수정으로 인한 코드 수정 (연관관계 수정)
     CustomerRequest customerRequest = customerRequestRepository.findById(form.getServiceRequestId())
         .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_REQUEST_NOT_EXIST));
@@ -116,10 +113,23 @@ public class CompanyProductServiceImpl implements CompanyProductService {
   @Override
   public List<CompaniesServiceProduct> selectNotPurchasedProduct(String refinedToken) {
 
-    String email = tokenProvider.getUsername(refinedToken);
-    Company company = companyRepository.findByEmail(email)
-            .orElseThrow(() -> new CompanyException(CompanyErrorCode.NOT_EXIST_COMPANY_MEMBER));
-
+    Company company = getCompany(refinedToken);
     return serviceProductRepository.findAllByCompanyIdAndPurchaseYnFalse(company.getId());
   }
+
+  @Override
+  public List<CompaniesServiceProduct> selectPurchasedProduct(String refinedToken) {
+
+    Company company = getCompany(refinedToken);
+    return serviceProductRepository.findAllByCompanyIdAndPurchaseYnTrue(company.getId());
+  }
+
+  private Company getCompany(String refinedToken) {
+
+    String email = tokenProvider.getUsername(refinedToken);
+    Company company = companyRepository.findByEmail(email)
+        .orElseThrow(() -> new CompanyException(CompanyErrorCode.NOT_EXIST_COMPANY_MEMBER));
+    return company;
+  }
+
 }

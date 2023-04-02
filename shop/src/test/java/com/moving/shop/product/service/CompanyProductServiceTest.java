@@ -3,7 +3,9 @@ package com.moving.shop.product.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.moving.shop.common.exception.customexception.CompanyException;
+import com.moving.shop.common.exception.customexception.CustomerException;
 import com.moving.shop.common.exception.type.CompanyErrorCode;
+import com.moving.shop.common.exception.type.CustomerErrorCode;
 import com.moving.shop.common.security.TokenProvider;
 import com.moving.shop.company.application.CompanySignInApplication;
 import com.moving.shop.company.application.CompanySignUpApplication;
@@ -12,12 +14,22 @@ import com.moving.shop.company.domain.dto.CompanySignUpForm;
 import com.moving.shop.company.service.CompanySignUpService;
 import com.moving.shop.customer.application.CustomerSignInApplication;
 import com.moving.shop.customer.application.CustomerSignUpApplication;
+import com.moving.shop.customer.domain.dto.ChangeCashForm;
 import com.moving.shop.customer.domain.dto.CustomerRequestForm;
 import com.moving.shop.customer.domain.dto.SignInForm;
 import com.moving.shop.customer.domain.dto.SignUpForm;
+import com.moving.shop.customer.domain.entity.Customer;
+import com.moving.shop.customer.domain.entity.CustomerRequest;
+import com.moving.shop.customer.domain.repository.CustomerRepository;
+import com.moving.shop.customer.domain.repository.CustomerRequestRepository;
 import com.moving.shop.customer.domain.type.MemberType;
 import com.moving.shop.customer.domain.type.ServiceCategory;
+import com.moving.shop.customer.service.CustomerCashService;
 import com.moving.shop.customer.service.CustomerRequestService;
+import com.moving.shop.order.application.OrderApplication;
+import com.moving.shop.order.domain.dto.AddOrderProductForm;
+import com.moving.shop.order.domain.dto.AddOrderProductOptionForm;
+import com.moving.shop.order.domain.entity.ServiceOrder;
 import com.moving.shop.product.domain.dto.AddProductOptionForm;
 import com.moving.shop.product.domain.dto.AddServiceProductForm;
 import com.moving.shop.product.domain.dto.CompaniesServiceProduct;
@@ -32,6 +44,7 @@ import com.moving.shop.servicechat.domain.repository.ChatRoomRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.hibernate.sql.Update;
 import org.junit.jupiter.api.Test;
@@ -45,6 +58,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 class CompanyProductServiceTest {
+
+  @Autowired
+  private OrderApplication orderApplication;
+
+  @Autowired
+  private CustomerProductService customerProductService;
+
+  @Autowired
+  private CustomerCashService customerCashService;
+
+  @Autowired
+  private CustomerRequestRepository customerRequestRepository;
+
+  @Autowired
+  private CustomerRepository customerRepository;
 
   @Autowired
   private ChatRoomRepository chatRoomRepository;
@@ -77,6 +105,30 @@ class CompanyProductServiceTest {
   private TokenProvider tokenProvider;
 
   @Test
+  void SELECT_PURCHASED_PRODUCT_TEST() {
+
+    //given
+    // (create request -> product add)
+    ServiceProduct firstServiceProduct = addServiceProduct();
+    String customersJwt = loginCustomer();
+    customerCashUpdate(customersJwt);
+
+    // (order create)
+    AddOrderProductForm orderForm = makeOrderForm(customersJwt);
+    ServiceOrder serviceOrder = orderApplication.takeOrder(customersJwt, orderForm);
+
+    //when
+    String companiesJwt = loginCompany();
+    List<CompaniesServiceProduct> purchasedProducts = companyProductService.selectPurchasedProduct(companiesJwt);
+
+    //then
+    assertEquals(1, purchasedProducts.size());
+    assertEquals(true, purchasedProducts.get(0).isPurchaseYn());
+    assertEquals(150000, purchasedProducts.get(0).getProductPrice());
+    assertEquals("테스트상품", purchasedProducts.get(0).getName());
+  }
+
+  @Test
   void SELECT_NOT_PURCHASED_PRODUCT_TEST() {
 
     //given
@@ -104,14 +156,17 @@ class CompanyProductServiceTest {
         .productPrice(150000)
         .serviceRequestId(1L)
         .build();
-    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
-    ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(serviceProduct.getId())
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt,
+        addServiceProductForm);
+    ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(
+            serviceProduct.getId())
         .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
     ChatRoom chatRoom = chatRoomRepository.findByServiceProduct_Id(serviceProduct.getId())
         .orElseThrow(() -> new CompanyException(CompanyErrorCode.CHAT_ROOM_INFO_NOT_EXIST));
 
     //when
-    List<CompaniesServiceProduct> notPurchasedProducts = companyProductService.selectNotPurchasedProduct(companiesJwt);
+    List<CompaniesServiceProduct> notPurchasedProducts = companyProductService.selectNotPurchasedProduct(
+        companiesJwt);
 
     //then
     assertEquals(false, notPurchasedProducts.get(0).isPurchaseYn());
@@ -148,17 +203,22 @@ class CompanyProductServiceTest {
         .productPrice(150000)
         .serviceRequestId(1L)
         .build();
-    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
-    ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(serviceProduct.getId())
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt,
+        addServiceProductForm);
+    ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(
+            serviceProduct.getId())
         .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
     ChatRoom chatRoom = chatRoomRepository.findByServiceProduct_Id(serviceProduct.getId())
         .orElseThrow(() -> new CompanyException(CompanyErrorCode.CHAT_ROOM_INFO_NOT_EXIST));
 
     //when
     companyProductService.deleteServiceProduct(companiesJwt, foundServiceProduct.getId());
-    boolean isServiceProductExists = serviceProductRepository.existsById(foundServiceProduct.getId());
-    boolean isProductOption1Exists = productOptionRepository.existsById(foundServiceProduct.getProductOptions().get(0).getId());
-    boolean isProductOption2Exists = productOptionRepository.existsById(foundServiceProduct.getProductOptions().get(1).getId());
+    boolean isServiceProductExists = serviceProductRepository.existsById(
+        foundServiceProduct.getId());
+    boolean isProductOption1Exists = productOptionRepository.existsById(
+        foundServiceProduct.getProductOptions().get(0).getId());
+    boolean isProductOption2Exists = productOptionRepository.existsById(
+        foundServiceProduct.getProductOptions().get(1).getId());
     boolean isChatRoomExists = chatRoomRepository.existsById(chatRoom.getId());
 
     //then
@@ -196,10 +256,12 @@ class CompanyProductServiceTest {
         .productPrice(150000)
         .serviceRequestId(1L)
         .build();
-    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt,
+        addServiceProductForm);
 
     //when
-    List<UpdateProductOptionForm> updateProductOptionForms = makeUpdateProductOptionForms(serviceProduct);
+    List<UpdateProductOptionForm> updateProductOptionForms = makeUpdateProductOptionForms(
+        serviceProduct);
     UpdateServiceProductForm updateServiceProductForm = UpdateServiceProductForm.builder()
         .serviceProductId(serviceProduct.getId())
         .productOptions(updateProductOptionForms)
@@ -209,9 +271,10 @@ class CompanyProductServiceTest {
         .executeDate(LocalDateTime.now().plusMonths(7))
         .serviceRequestId(serviceProduct.getCustomerRequest().getId())
         .build();
-    ServiceProduct updatedServiceProduct = companyProductService.updateServiceProduct(companiesJwt, updateServiceProductForm);
+    ServiceProduct updatedServiceProduct = companyProductService.updateServiceProduct(companiesJwt,
+        updateServiceProductForm);
     ServiceProduct foundServiceProduct = serviceProductRepository.findWithProductOptionsById(
-        updatedServiceProduct.getId())
+            updatedServiceProduct.getId())
         .orElseThrow(() -> new CompanyException(CompanyErrorCode.SERVICE_PRODUCT_NOT_EXIST));
 
     //then
@@ -249,7 +312,8 @@ class CompanyProductServiceTest {
         .productPrice(150000)
         .serviceRequestId(1L)
         .build();
-    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt, addServiceProductForm);
+    ServiceProduct serviceProduct = companyProductService.addServiceProduct(companiesJwt,
+        addServiceProductForm);
 
     //then
     assertNotNull(serviceProduct);
@@ -289,13 +353,102 @@ class CompanyProductServiceTest {
         .build();
 
     //when
-    CustomerRequestForm result = customerRequestService.addCustomerRequest(customersJwt, customerRequestForm);
+    CustomerRequestForm result = customerRequestService.addCustomerRequest(customersJwt,
+        customerRequestForm);
 
     //then
     assertNotNull(result);
   }
 
-  private List<UpdateProductOptionForm> makeUpdateProductOptionForms(ServiceProduct serviceProduct) {
+  private AddOrderProductForm makeOrderForm(String customersJwt) {
+
+    //고객 앞으로 온 서비스 상품 정보를 토대로 주문 form 생성
+    List<ServiceProduct> serviceProductsForRequest = customerProductService.findByCustomerId(
+        customersJwt);
+
+    AddOrderProductOptionForm option = AddOrderProductOptionForm.builder()
+        .productOptionId(serviceProductsForRequest.get(0).getProductOptions().get(0).getId())
+        .optionPrice(serviceProductsForRequest.get(0).getProductOptions().get(0).getOptionPrice())
+        .build();
+
+    AddOrderProductForm orderForm = AddOrderProductForm.builder()
+        .customerRequestId(serviceProductsForRequest.get(0).getCustomerRequest().getId())
+        .serviceProductId(serviceProductsForRequest.get(0).getId())
+        .productPrice(serviceProductsForRequest.get(0).getProductPrice())
+        .addOrderProductOptionForms(Arrays.asList(option))
+        .build();
+    return orderForm;
+  }
+
+  private void customerCashUpdate(String customersJwt) {
+
+    //cash update for order product
+    ChangeCashForm changeCashForm = ChangeCashForm.builder()
+        .cash(5000000)
+        .description("CASH UPDATE FOR ORDER-TEST")
+        .fromWhom("TEST-USER")
+        .build();
+    customerCashService.changeCashBalance(customersJwt, changeCashForm);
+  }
+
+  private String loginCustomer() {
+
+    SignInForm signInForm = SignInForm.builder()
+        .email("testtest0101@naver.com")
+        .password("1122")
+        .build();
+    return customerSignInApplication.generateToken(signInForm);
+  }
+
+  private CustomerRequest makeCustomerRequest() {
+
+    //given
+    String customersJwt = makeCustomersJwt();
+
+    CustomerRequestForm form = CustomerRequestForm.builder()
+        .serviceAddress("경기 가평")
+        .desiredDate(LocalDate.now().plusMonths(3))
+        .detailRequest("test 요구사항입니다.")
+        .placeArea(23)
+        .serviceCategory("cleaning")
+        .placeShape("house")
+        .build();
+
+    //when
+    Customer customer = customerRepository.findByEmail(tokenProvider.getUsername(customersJwt))
+        .orElseThrow(() -> new CustomerException(CustomerErrorCode.NOT_EXIST_MEMBER));
+
+    CustomerRequest customerRequest = CustomerRequest.builder()
+        .customer(customer)
+        .serviceAddress(form.getServiceAddress())
+        .desiredDate(form.getDesiredDate())
+        .detailRequest(form.getDetailRequest())
+        .placeArea(form.getPlaceArea())
+        .serviceCategory(form.getServiceCategoryType())
+        .placeShape(form.getPlaceShapeType())
+        .build();
+    return customerRequestRepository.save(customerRequest);
+  }
+
+  private ServiceProduct addServiceProduct() {
+
+    String companysJwt = makeCompanysJwt();
+    CustomerRequest customerRequest = makeCustomerRequest();
+
+    List<AddProductOptionForm> addProductOptionForms = makeProductOptionForms();
+    AddServiceProductForm addServiceProductForm = AddServiceProductForm.builder()
+        .executeDate(LocalDateTime.now().plusMonths(3))
+        .name("테스트상품")
+        .productOptions(addProductOptionForms)
+        .outlineDescription("테스트용으로 등록하는 상품입니다.")
+        .productPrice(150000)
+        .serviceRequestId(customerRequest.getId())
+        .build();
+    return companyProductService.addServiceProduct(companysJwt, addServiceProductForm);
+  }
+
+  private List<UpdateProductOptionForm> makeUpdateProductOptionForms(
+      ServiceProduct serviceProduct) {
 
     List<UpdateProductOptionForm> updateProductOptionForms = new ArrayList<>();
 
@@ -322,6 +475,14 @@ class CompanyProductServiceTest {
     addProductOptionForms.add(addProductOption1);
     addProductOptionForms.add(addProductOption2);
     return addProductOptionForms;
+  }
+
+  private String loginCompany() {
+    CompanySignInForm form = CompanySignInForm.builder()
+        .email("company@google.com")
+        .password("1111")
+        .build();
+    return companySignInApplication.generateToken(form);
   }
 
   private String makeCompanysJwt() {
