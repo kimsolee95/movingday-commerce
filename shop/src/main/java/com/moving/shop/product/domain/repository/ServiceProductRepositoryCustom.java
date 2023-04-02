@@ -9,4 +9,6 @@ public interface ServiceProductRepositoryCustom {
   List<ServiceProduct> findByCustomerId(Long customerId);
 
   List<CompaniesServiceProduct> findAllByCompanyIdAndPurchaseYnFalse(Long companyId);
+
+  List<CompaniesServiceProduct> findAllByCompanyIdAndPurchaseYnTrue(Long companyId);
 }

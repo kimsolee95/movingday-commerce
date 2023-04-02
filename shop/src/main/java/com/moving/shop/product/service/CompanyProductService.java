@@ -15,4 +15,6 @@ public interface CompanyProductService {
   void deleteServiceProduct(String refinedToken, Long serviceProductId);
 
   List<CompaniesServiceProduct> selectNotPurchasedProduct(String refinedToken);
+
+  List<CompaniesServiceProduct> selectPurchasedProduct(String refinedToken);
 }
